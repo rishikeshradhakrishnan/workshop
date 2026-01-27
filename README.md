@@ -2,6 +2,20 @@
 
 A comprehensive 90-minute workshop curriculum that teaches developers how to build production-grade Claude Code plugins. Participants create a "Codebase Toolkit" plugin with subagents, skills, and MCP server integrations.
 
+## Version
+
+| | |
+|---|---|
+| **Version** | 2.0.0 |
+| **Last Updated** | January 2026 |
+| **Claude Code** | Compatible with latest version |
+| **Status** | Production Ready |
+
+### Changelog
+
+- **v2.0.0** - Complete workshop restructure with 5-phase curriculum
+- **v1.0.0** - Initial workshop release
+
 ## Workshop Overview
 
 | Phase | Duration | Focus |
