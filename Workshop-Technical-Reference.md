@@ -43,7 +43,6 @@
   - [6A: Clone Fresh Repository](#6a-clone-fresh-repository)
   - [6B: Install Plugin from Marketplace](#6b-install-plugin-from-marketplace)
   - [6C: Use Plugin on New Codebase](#6c-use-plugin-on-new-codebase)
-- [Reference Materials](#reference-materials)
 
 ---
 
