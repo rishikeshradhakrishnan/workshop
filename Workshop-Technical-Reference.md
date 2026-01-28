@@ -442,11 +442,17 @@ Combine into a single report ordered by severity.
 **Prompt:**
 
 ```
-Add a "wishlist" feature to this application:
-1. Users can save products for later
-2. Store wishlist data using the existing cart service patterns
-3. Add API endpoints to the frontend service
-4. Follow the existing code patterns in this repo
+Add a promotional discount code feature to the checkout flow:
+
+1. Create a discount code input field on the cart/checkout page
+2. Support these discount codes:
+   - SAVE10 - 10% off entire order
+   - FREESHIP - Free shipping (set shipping to $0)
+   - ASTRO20 - 20% off orders over $100
+3. Validate discount codes against a simple in-memory store
+4. Display the discount amount and updated total
+5. Ensure the discount is applied in the order confirmation
+6. Add appropriate OpenTelemetry spans for discount validation
 
 First show me your implementation plan, then build it.
 ```
