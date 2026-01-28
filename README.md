@@ -6,14 +6,14 @@ A comprehensive 90-minute workshop curriculum that teaches developers how to bui
 
 | | |
 |---|---|
-| **Version** | 2.0.0 |
+| **Version** | 2.0.0.b |
 | **Last Updated** | January 2026 |
 | **Claude Code** | Compatible with latest version |
-| **Status** | Testing/WIP |
+| **Status** | Beta |
 
 ### Changelog
 
-- **v2.0.0** - Complete workshop restructure with 5-phase curriculum (Testing/WIP)
+- **v2.0.0.b** - Complete workshop restructure with 5-phase curriculum (Beta)
 - **v1.0.0** - Initial workshop release
 
 ## Workshop Overview
