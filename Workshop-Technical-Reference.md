@@ -467,55 +467,108 @@ First show me your implementation plan, then build it.
 <a id="4b-mcp-configuration"></a>
 ### 4B: MCP Configuration
 
-**File:** `~/.claude/settings.json`
+MCP (Model Context Protocol) servers extend Claude Code's capabilities by connecting to external tools. Claude Code uses the `claude mcp add` CLI command to configure servers.
 
-**Full Configuration:**
+**Adding MCP Servers:**
 
+MCP servers can be added using the CLI with different transport types:
+
+| Transport | Use Case | Example |
+|-----------|----------|---------|
+| `http` | Remote cloud services (recommended) | GitHub, Sentry |
+| `sse` | Server-Sent Events (deprecated) | Legacy services |
+| `stdio` | Local processes | Playwright, Filesystem |
+
+**Scope Options:**
+
+| Scope | Storage Location | Use Case |
+|-------|------------------|----------|
+| `local` | `~/.claude.json` (per project) | Personal, single project |
+| `project` | `.mcp.json` in project root | **Team sharing, plugin bundling** |
+| `user` | `~/.claude.json` (global) | Personal, all projects |
+
+> **For this workshop**, we use `--scope project` so the configuration is stored in `.mcp.json` and can later be bundled with a plugin.
+
+**Workshop MCP Servers:**
+```bash
+# 1. Add Playwright MCP (browser automation)
+claude mcp add --transport stdio --scope project playwright -- npx -y @anthropic/mcp-server-playwright
+
+# 2. Add GitHub MCP (repository operations)
+claude mcp add --transport http --scope project github https://api.githubcopilot.com/mcp/
+
+# 3. Add Filesystem MCP (file operations outside repo)
+claude mcp add --transport stdio --scope project filesystem -- npx -y @modelcontextprotocol/server-filesystem /path/to/allowed/directory
+```
+
+**Resulting `.mcp.json` file (created automatically):**
 ```json
 {
   "mcpServers": {
-    "github": {
-      "command": "npx",
-      "args": ["-y", "@anthropic/mcp-server-github"],
-      "env": {
-        "GITHUB_TOKEN": "your-github-token-here"
-      }
-    },
     "playwright": {
+      "type": "stdio",
       "command": "npx",
       "args": ["-y", "@anthropic/mcp-server-playwright"]
+    },
+    "github": {
+      "type": "http",
+      "url": "https://api.githubcopilot.com/mcp/"
+    },
+    "filesystem": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/path/to/allowed/directory"]
     }
   }
 }
 ```
 
-**Minimal Configuration (Filesystem only):**
+**Managing MCP Servers:**
+```bash
+# List all configured servers
+claude mcp list
 
-```json
-{
-  "mcpServers": {
-    "playwright": {
-      "command": "npx",
-      "args": ["-y", "@anthropic/mcp-server-playwright"]
-    }
-  }
-}
+# Get details for a specific server
+claude mcp get playwright
+
+# Remove a server
+claude mcp remove playwright
+
+# Check server status (within Claude Code)
+/mcp
 ```
 
 **MCP Server Reference:**
 
-| Server | Purpose | Requirements |
-|--------|---------|--------------|
-| GitHub | Repo operations, PRs, issues | GitHub token |
-| Playwright | Browser automation, screenshots | Node.js |
+| Server | Transport | Purpose | Requirements |
+|--------|-----------|---------|--------------|
+| Playwright | stdio | Browser automation, screenshots, UI testing | Node.js |
+| GitHub | http | Repo operations, PRs, issues | OAuth (via `/mcp`) |
+| Filesystem | stdio | File operations outside repo | Node.js |
+
+**Authentication:**
+
+Some MCP servers (like GitHub) require OAuth authentication:
+
+1. Add the server using `claude mcp add`
+2. Start Claude Code: `claude`
+3. Run `/mcp` command
+4. Select the server and click "Authenticate"
+5. Complete OAuth flow in browser
+
+**Windows Users Note:**
+
+On native Windows (not WSL), use the `cmd /c` wrapper:
+```bash
+claude mcp add --transport stdio --scope project playwright -- cmd /c npx -y @anthropic/mcp-server-playwright
+```
 
 ---
 
 <a id="4c-mcp-demo-prompts"></a>
 ### 4C: MCP Demo Prompts
 
-**Playwright MCP:**
-
+**Playwright MCP (Browser Automation):**
 ```
 Use Playwright to:
 1. Open the demo application at http://localhost:8080
@@ -524,13 +577,22 @@ Use Playwright to:
 4. Report what UI elements are visible
 ```
 
-**GitHub MCP:**
+**GitHub MCP (Repository Operations):**
 
+> **Note:** GitHub MCP requires OAuth authentication. Run `/mcp` first, select "github", and click "Authenticate" to complete the OAuth flow in your browser.
 ```
 Use the GitHub MCP to:
 1. List the open issues in this repository
 2. Summarize what bugs or features are requested
 3. Suggest which our bug-hunter subagent could help investigate
+```
+
+**Filesystem MCP (External File Access):**
+```
+Use the Filesystem MCP to:
+1. List files in the allowed directory
+2. Read the contents of a specific file
+3. Create a summary of what files are available
 ```
 
 ---
@@ -566,15 +628,98 @@ EOF
 # Exit current session
 exit
 
-# Start fresh
+# Start fresh<a id="4d-participant-mcp-setup"></a>
+### 4D: Participant MCP Setup
+
+**Step 1: Verify Node.js is installed**
+```bash
+node --version
+# Should output v18.x or higher
+```
+
+**Step 2: Add MCP servers using CLI**
+```bash
+# Navigate to the project directory
+cd opentelemetry-demo
+
+# Add Playwright MCP (simplest to test)
+claude mcp add --transport stdio --scope project playwright -- npx -y @anthropic/mcp-server-playwright
+```
+
+**Step 3: Verify the configuration was created**
+```bash
+# Check that .mcp.json was created
+cat .mcp.json
+```
+
+Expected output:
+```json
+{
+  "mcpServers": {
+    "playwright": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@anthropic/mcp-server-playwright"]
+    }
+  }
+}
+```
+
+**Step 4: Start Claude Code and verify**
+```bash
 claude
 ```
 
-**Step 3: Verify**
+Then run:
+```
+/mcp
+```
 
+You should see `playwright` listed as an available server.
+
+**Step 5: Test the MCP server**
 ```
-Open the application to verify if its launched successfully. Use the address http://localhost:8080
+Use Playwright to take a screenshot of http://localhost:8080
 ```
+
+**Optional: Add GitHub MCP with authentication**
+```bash
+# Exit Claude Code first
+exit
+
+# Add GitHub MCP
+claude mcp add --transport http --scope project github https://api.githubcopilot.com/mcp/
+
+# Start Claude Code
+claude
+
+# Authenticate with GitHub
+/mcp
+# Select "github" → "Authenticate" → Complete OAuth in browser
+```
+
+**Optional: Add Filesystem MCP**
+```bash
+# Exit Claude Code first
+exit
+
+# Add Filesystem MCP (replace with your actual path)
+claude mcp add --transport stdio --scope project filesystem -- npx -y @modelcontextprotocol/server-filesystem ~/Documents
+
+# Start Claude Code
+claude
+```
+
+**Troubleshooting:**
+
+| Issue | Solution |
+|-------|----------|
+| "Command not found: claude" | Ensure Claude Code is installed and in PATH |
+| "npx: command not found" | Install Node.js (v18+) |
+| Server not appearing in `/mcp` | Restart Claude Code after adding servers |
+| "Connection closed" on Windows | Use `cmd /c` wrapper (see 4B) |
+| GitHub authentication fails | Ensure you have a GitHub account and try `/mcp` again |
+| `.mcp.json` not created | Check you're in the correct directory |
 
 ---
 
