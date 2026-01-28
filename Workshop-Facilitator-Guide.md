@@ -24,7 +24,8 @@ This guide contains:
 | 2. Test Generation | 15 min | Test generation experience | (standalone) |
 | 3. Debugging | 15 min | `bug-hunter` subagent | ✅ Component 2 |
 | 4. Development + MCP | 20 min | MCP configuration | (infrastructure) |
-| 5. Skills + Packaging | 20 min | `code-reviewer` skill + packaged plugin | ✅ Component 3 + Package |
+| 5. Skills + Packaging | 25 min | `code-reviewer` skill + marketplace plugin | ✅ Component 3 + Plugin |
+| 6. Reusability Demo | 10 min | Use plugin on fresh codebase | Validation |
 | Wrap-up | 5 min | Summary + Q&A | |
 
 ---
@@ -435,147 +436,314 @@ Review src/paymentservice for code quality issues.
 
 #### 🎤 Transition
 
-> "A plugin needs a manifest that describes what it contains. This is the PLUGIN.md file."
+> "Now let's make this an official plugin. Every plugin needs a manifest — a `plugin.json` file inside a `.claude-plugin` folder."
 
-Create the file from [5B: Plugin Manifest](Workshop-Technical-Reference.md#5b-plugin-manifest)
+📎 **Reference:** [5B: Plugin Manifest (plugin.json)](Workshop-Technical-Reference.md#5b-plugin-manifest-pluginjson)
 
-> "This documents your plugin — what's included, how to use it, and how to install it. Think of it as the README for your plugin."
+Create the directory and file.
 
-**Have participants create the same file.**
+> "This tells Claude Code what your plugin is called, what it does, and who made it. It's the metadata that makes your plugin installable."
+
+**Have participants create the same manifest.**
 
 ---
 
-### 5C: Package the Plugin
+### 5C: Verify Plugin Structure
 
-**⏱️ Time: 72:00 - 77:00 (5 min)**
+**⏱️ Time: 72:00 - 73:00 (1 min)**
 
 #### 🎤 Transition
 
-> "Now let's package everything into a distributable `.skill` file."
+> "Let's verify our plugin structure is complete before we create a marketplace."
 
-📎 **Reference:** [5C: Package Plugin](Workshop-Technical-Reference.md#5c-package-plugin)
+📎 **Reference:** [5C: Complete Plugin Structure](Workshop-Technical-Reference.md#5c-complete-plugin-structure)
 
-Run the skill-creator packaging prompt.
+Show the expected structure:
 
-> "The skill-creator validates our files, bundles them together, and creates a single `.skill` file we can share."
-
-**Show the package contents:**
-
-```bash
-unzip -l codebase-toolkit.skill
+```
+.claude/plugins/codebase-toolkit/
+├── .claude-plugin/
+│   └── plugin.json              # ← We just created this
+├── agents/
+│   ├── service-documenter.md    # ← Created in Phase 1
+│   └── bug-hunter.md            # ← Created in Phase 3
+└── skills/
+    └── code-reviewer/
+        └── SKILL.md             # ← Created in Phase 5A
 ```
 
-> "Four files: our manifest, two subagents, and one skill. This is your complete plugin!"
+> "Everyone should have these four files. Quick check — raise your hand if anything is missing."
 
-**Have participants package their plugins.**
-
-👀 **Watch for:**
-- Missing files → Check file paths match exactly
-- YAML errors → Common cause of validation failures
-- Permission errors → May need to check directory permissions
+👀 **Watch for:** Missing `.claude-plugin/plugin.json` — most common issue
 
 ---
 
-### 5D: Test Plugin Installation
+### 5D: Create Local Test Marketplace
 
-**⏱️ Time: 77:00 - 80:00 (3 min)**
+**⏱️ Time: 73:00 - 76:00 (3 min)**
 
 #### 🎤 Transition
 
-> "Let's verify the plugin works by doing a clean install. We'll remove the local components and install from the package."
+> "To install a plugin, you need a marketplace. A marketplace is just a folder with a JSON file that lists available plugins. Let's create one locally to test."
 
-📎 **Reference:** [5D: Test Plugin Installation](Workshop-Technical-Reference.md#5d-test-plugin-installation)
+📎 **Reference:** [5D: Create Local Test Marketplace](Workshop-Technical-Reference.md#5d-create-local-test-marketplace)
 
-Run the uninstall, extract, and install commands.
+> "We'll create this as a sibling folder to the demo repo — not inside it."
 
-> "And now let's verify:"
+Run the commands to create the marketplace structure and manifest.
+
+> "The key is the `source` field — it points to where our plugin lives. Right now it's a relative path to our local plugin folder."
+
+**Have participants create the same marketplace.**
+
+👀 **Watch for:** 
+- JSON syntax errors in marketplace.json
+- Incorrect relative path in `source` field
+
+---
+
+### 5E: Install and Test Plugin
+
+**⏱️ Time: 76:00 - 80:00 (4 min)**
+
+#### 🎤 Transition
+
+> "Now the moment of truth — let's install our plugin from the marketplace using the official plugin commands."
+
+📎 **Reference:** [5E: Install and Test Plugin Locally](Workshop-Technical-Reference.md#5e-install-and-test-plugin-locally)
+
+**Step 1: Clean up manually installed files**
+
+> "First, let's remove the files we copied manually earlier. The plugin should provide everything."
+
+Run the rm commands.
+
+**Step 2: Add marketplace**
+
+```
+/plugin marketplace add ../test-marketplace
+```
+
+> "This tells Claude Code where to find plugins."
+
+**Step 3: Install plugin**
+
+```
+/plugin install codebase-toolkit@test-marketplace
+```
+
+> "Select 'Install now' when prompted, then restart Claude Code."
+
+**Step 4: Restart and verify**
 
 ```
 /code-reviewer
 
-Briefly review src/cartservice.
+Briefly review src/cartservice
 ```
 
-> "It works! You've just installed your plugin from a package."
+> "It works! We just installed our plugin through the official plugin system."
+
+👀 **Watch for:**
+- "Invalid schema" error → Check the `source` path in marketplace.json
+- Plugin not found after install → Restart Claude Code
 
 ---
 
-### 5E: GitHub Publishing
+### 5F: Publish to GitHub Marketplace
 
-**⏱️ Time: 80:00 - 82:00 (2 min)**
+**⏱️ Time: 80:00 - 85:00 (5 min)**
 
 #### 🎤 Transition
 
-> "To share your plugin, you can push it to GitHub. Let me show you quickly."
+> "Local testing works. Now let's publish this so anyone can use it. I've set up a GitHub repository that will serve as our marketplace."
 
-📎 **Reference:** [5E: GitHub Publishing](Workshop-Technical-Reference.md#5e-github-publishing)
+📎 **Reference:** [5F: Publish to GitHub Marketplace](Workshop-Technical-Reference.md#5f-publish-to-github-marketplace)
 
-Show the git commands (demo only, don't wait for participants):
+**Demo the process (instructor only):**
 
-> "Others can then clone your repo and install the plugin. This is how you share plugins with your team."
+1. Show the marketplace repo structure
+2. Copy the plugin into `plugins/` directory
+3. Create the marketplace.json with the proper source path
+4. Commit and push
+
+> "The structure is the same as our local marketplace, but now it's on GitHub where anyone can access it."
+
+**Add the GitHub marketplace:**
+
+```
+/plugin marketplace add rishikeshradhakrishnan/marketplace
+```
+
+> "Now anyone in the world can install our plugin with that one command."
 
 ---
 
-### 5F: Marketplace Demo
+### 5G: Browse Existing Marketplaces
 
-**⏱️ Time: 82:00 - 85:00 (3 min)**
+**⏱️ Time: 85:00 - 88:00 (3 min)**
 
 #### 🎤 Transition
 
-> "Finally, let me show you some plugins already available in the marketplace."
+> "Let me show you what other marketplaces look like. Anthropic maintains an official demo marketplace."
 
-📎 **Reference:** [5F: Marketplace Demo](Workshop-Technical-Reference.md#5f-marketplace-demo)
+📎 **Reference:** [5G: Browse Existing Marketplaces](Workshop-Technical-Reference.md#5g-browse-existing-marketplaces)
+
+```
+/plugin marketplace add anthropics/claude-code
+```
+
+```
+/plugin
+```
+
+> "Select 'Browse Plugins' to see what's available. These are example plugins that demonstrate different capabilities."
+
+```
+/plugin marketplace list
+```
+
+> "You can see all marketplaces now — Anthropic's demos, our workshop marketplace, and the local test one. The plugin ecosystem is designed to be distributed like this."
+
+#### ✅ Checkpoint
+
+> "Congratulations! You've built a complete plugin, tested it locally, and we've published it to a GitHub marketplace. Let's prove it works on a completely fresh codebase."
+
+---
+
+## Add Phase 6:
+
+## Phase 6: Reusability Demo
+
+**⏱️ Total Time: 10 minutes**
+
+---
+
+### 6A: Clone Fresh Repository
+
+**⏱️ Time: 88:00 - 90:00 (2 min)**
+
+#### 🎤 Transition Into Phase
+
+> "The whole point of packaging this as a plugin is reusability. Let's prove it works by using it on a completely fresh codebase — one we haven't touched at all."
+
+📎 **Reference:** [6A: Clone Fresh Repository](Workshop-Technical-Reference.md#6a-clone-fresh-repository)
 
 ```bash
-claude /plugins
+cd ~
+mkdir plugin-demo
+cd plugin-demo
+git clone https://github.com/open-telemetry/opentelemetry-demo.git
+cd opentelemetry-demo
 ```
 
-**Highlight key plugins:**
-
-> "**document-skills** creates Word docs, PowerPoints, spreadsheets, PDFs — all from Claude Code.
-> **claude-md-management** helps maintain CLAUDE.md files.
-> **code-review** provides professional code review workflows."
-
-**Demo document-skills if available:**
-
-> "Watch — I'll create a Word document for our wishlist feature."
-
-> "These follow the same structure as what we just built. You could publish your plugin to the marketplace someday!"
+> "This is the original OpenTelemetry demo from the official repo — no modifications, completely fresh."
 
 ---
+
+### 6B: Install Plugin from Marketplace
+
+**⏱️ Time: 90:00 - 93:00 (3 min)**
+
+#### 🎤 Transition
+
+> "Now watch how easy it is to add our plugin to this new project."
+
+📎 **Reference:** [6B: Install Plugin from Marketplace](Workshop-Technical-Reference.md#6b-install-plugin-from-marketplace)
+
+```bash
+claude
+```
+
+```
+/plugin marketplace add rishikeshradhakrishnan/marketplace
+```
+
+```
+/plugin install codebase-toolkit@rishikesh-marketplace
+```
+
+> "One marketplace add, one install command. That's it. Restart Claude Code and we're ready."
+
+---
+
+### 6C: Use Plugin on New Codebase
+
+**⏱️ Time: 93:00 - 98:00 (5 min)**
+
+#### 🎤 Transition
+
+> "Let's use our plugin on this fresh codebase. Pick whichever component you want to try."
+
+📎 **Reference:** [6C: Use Plugin on New Codebase](Workshop-Technical-Reference.md#6c-use-plugin-on-new-codebase)
+
+**Demo one or more:**
+
+```
+/code-reviewer
+
+Review the src/frontend directory for code quality issues.
+```
+
+Or:
+
+```
+Use 3 bug-hunter subagents in parallel to investigate:
+- src/cartservice
+- src/productcatalogservice  
+- src/recommendationservice
+
+Compile findings into a prioritized report.
+```
+
+#### 🎤 Key Point
+
+> "This is the power of plugins:
+> - You built it once
+> - Published it to a marketplace
+> - Now it works on any codebase
+> - Your team can install it with a single command
+> - Updates are as simple as pulling from the marketplace"
+
+👀 **Watch for:** Participants who want to try their own prompts — encourage this!
+
+---
+
+## Replace Wrap-up section with:
 
 ## Wrap-up
 
-**⏱️ Time: 85:00 - 90:00 (5 min)**
+**⏱️ Time: 98:00 - 105:00 (5-7 min)**
 
 ### 🎤 Summary Talk Track
 
 > "Let's recap what we built today."
 
-| Component | Type | What It Does |
-|-----------|------|--------------|
-| `service-documenter` | Subagent | Documents services in parallel |
-| `bug-hunter` | Subagent | Debugs services in parallel |
-| `code-reviewer` | Skill | Reviews code quality |
-| MCP config | Infrastructure | Extends Claude's reach |
-| `codebase-toolkit.skill` | Plugin | Packages everything for distribution |
+| Component | Type | Where It Lives |
+|-----------|------|----------------|
+| `service-documenter` | Subagent | `agents/` |
+| `bug-hunter` | Subagent | `agents/` |
+| `code-reviewer` | Skill | `skills/` |
+| `plugin.json` | Manifest | `.claude-plugin/` |
 
-> "Remember: each component works independently. The plugin is just a packaging mechanism. You can use `service-documenter` without the others, or add new components later."
+> "We packaged these into a plugin, created a marketplace, published to GitHub, and proved it works on a fresh codebase."
 
 ### 🎤 Key Takeaways
 
-> "Three things to remember:
+> "Four things to remember:
 > 
 > 1. **Subagents** run in parallel with isolated context — use them for speed
 > 2. **Skills** add knowledge to Claude — use them for specialized procedures
-> 3. **Plugins** package components for sharing — use them for distribution"
+> 3. **Plugins** package your components — defined by `.claude-plugin/plugin.json`
+> 4. **Marketplaces** make sharing trivial — one command to install"
 
 ### 🎤 Hackathon Prep
 
 > "For the hackathon, you now have:
-> - A complete toolkit for any codebase you encounter
-> - The ability to create more subagents and skills
-> - Understanding of how to package and share your work"
+> - A working plugin you can extend
+> - A marketplace you can add more plugins to
+> - Understanding of how to create and share components
+> - The ability to install your plugin on any project instantly"
 
 ### 🎤 Closing
 
@@ -583,21 +751,26 @@ claude /plugins
 
 **Pause for questions.**
 
-> "Thank you all! The technical reference document has all the prompts, file contents, and troubleshooting tips if you need them later. Good luck at the hackathon!"
+> "Thank you all! The technical reference document has all the file contents, commands, and troubleshooting tips. Good luck at the hackathon!"
 
 ---
+
+## Replace Troubleshooting Quick Reference with:
 
 ## Facilitator Troubleshooting Quick Reference
 
 | Issue | Phase | Quick Fix |
 |-------|-------|-----------|
 | Setup incomplete | Pre | Pair with neighbor who's ready |
-| Subagent not found | 1, 3 | Check `~/.claude/agents/` path and `.md` extension |
+| Subagent not found | 1, 3 | Verify file in `agents/` with `.md` extension |
 | Tasks run sequentially | 1, 3 | Add "run in parallel" to prompt |
 | Rate limiting | 1, 3 | Reduce parallel count to 2 |
 | MCP not connecting | 4 | Verify Node.js, check JSON syntax, restart Claude |
-| Skill not found | 5 | Check `~/.claude/skills/[name]/SKILL.md` path |
-| Packaging fails | 5 | Validate YAML frontmatter, check all files exist |
+| Skill not found | 5 | Verify `SKILL.md` in `skills/[name]/` directory |
+| Plugin manifest missing | 5 | Check `.claude-plugin/plugin.json` exists |
+| "Invalid schema" error | 5 | Check `source` path in marketplace.json |
+| Marketplace not found | 5 | Verify path, check JSON syntax |
+| Plugin not available after install | 5, 6 | Restart Claude Code |
 | Running behind | Any | See timing adjustments below |
 
 ### Timing Adjustments
@@ -606,5 +779,6 @@ claude /plugins
 |-----------------|-------------------|
 | 5 min | Skip Python test alternative in Phase 2 |
 | 10 min | Demo MCP only in Phase 4, skip participant setup |
-| 15 min | Skip parallel debugging demo in Phase 3, show bug-hunter only |
-| 20+ min | Skip GitHub publishing and marketplace demo in Phase 5 |
+| 15 min | Skip parallel debugging demo in Phase 3 |
+| 20+ min | Skip Phase 6, just describe what it would show |
+| 25+ min | Skip 5G (browse marketplaces), demo GitHub publish only |

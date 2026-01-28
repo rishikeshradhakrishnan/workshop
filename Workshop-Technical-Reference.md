@@ -33,11 +33,16 @@
   - [4E: Participant Development Exercises](#4e-participant-development-exercises)
 - [Phase 5: Skills, Packaging & Marketplace](#phase-5-skills-packaging--marketplace)
   - [5A: Code-Reviewer Skill](#5a-code-reviewer-skill)
-  - [5B: Plugin Manifest](#5b-plugin-manifest)
-  - [5C: Package Plugin](#5c-package-plugin)
-  - [5D: Test Plugin Installation](#5d-test-plugin-installation)
-  - [5E: GitHub Publishing](#5e-github-publishing)
-  - [5F: Marketplace Demo](#5f-marketplace-demo)
+  - [5B: Plugin Manifest (plugin.json)](#5b-plugin-manifest-pluginjson)
+  - [5C: Complete Plugin Structure](#5c-complete-plugin-structure)
+  - [5D: Create Local Test Marketplace](#5d-create-local-test-marketplace)
+  - [5E: Install and Test Plugin Locally](#5e-install-and-test-plugin-locally)
+  - [5F: Publish to GitHub Marketplace](#5f-publish-to-github-marketplace)
+  - [5G: Browse Existing Marketplaces](#5g-browse-existing-marketplaces)
+- [Phase 6: Reusability Demo](#phase-6-reusability-demo)
+  - [6A: Clone Fresh Repository](#6a-clone-fresh-repository)
+  - [6B: Install Plugin from Marketplace](#6b-install-plugin-from-marketplace)
+  - [6C: Use Plugin on New Codebase](#6c-use-plugin-on-new-codebase)
 - [Reference Materials](#reference-materials)
 
 ---
@@ -680,312 +685,479 @@ Review src/paymentservice for code quality issues.
 
 ---
 
-<a id="5b-plugin-manifest"></a>
-### 5B: Plugin Manifest
+<a id="5b-plugin-manifest-pluginjson"></a>
+### 5B: Plugin Manifest (plugin.json)
 
-**File:** `.claude/plugins/codebase-toolkit/PLUGIN.md`
+**File:** `.claude/plugins/codebase-toolkit/.claude-plugin/plugin.json`
 
-```markdown
+First, create the `.claude-plugin` directory inside your plugin folder:
+
+```bash
+mkdir -p .claude/plugins/codebase-toolkit/.claude-plugin
+```
+
+Then create the manifest:
+
+```json
+{
+  "name": "codebase-toolkit",
+  "description": "A toolkit for onboarding to new codebases. Includes parallel documentation generation, automated bug hunting, and code review capabilities.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Workshop Participant"
+  },
+  "keywords": ["documentation", "debugging", "code-review", "onboarding"]
+}
+```
+
 ---
-name: codebase-toolkit
-version: 1.0.0
-description: A toolkit for onboarding to new codebases. Includes parallel documentation generation, automated bug hunting, and code review capabilities.
-author: Workshop Participant
----
 
-# Codebase Toolkit Plugin
+<a id="5c-complete-plugin-structure"></a>
+### 5C: Complete Plugin Structure
 
-This plugin helps developers quickly understand and improve unfamiliar codebases.
-
-## Components
-
-### Subagents
-- **service-documenter** - Analyzes and documents microservices in parallel
-- **bug-hunter** - Investigates services for bugs and code quality issues
-
-### Skills
-- **code-reviewer** - Comprehensive code review following best practices
-
-## Usage
-
-### Document a codebase
-```
-Document this repo using 4 parallel service-documenter subagents
-```
-
-### Hunt for bugs
-```
-Debug these services using bug-hunter subagents in parallel
-```
-
-### Review code
-```
-/code-reviewer
-Review src/myservice for issues
-```
-
-## Installation
-
-1. Extract to `~/.claude/plugins/codebase-toolkit/`
-2. Copy agents to `~/.claude/agents/`
-3. Copy skills to `~/.claude/skills/`
-```
-
-**Final Plugin Structure:**
+**Verify your plugin has this structure:**
 
 ```
 .claude/plugins/codebase-toolkit/
-├── PLUGIN.md
+├── .claude-plugin/
+│   └── plugin.json              # Plugin manifest (required)
 ├── agents/
-│   ├── service-documenter.md
-│   └── bug-hunter.md
+│   ├── service-documenter.md    # Documentation subagent
+│   └── bug-hunter.md            # Debugging subagent
 └── skills/
     └── code-reviewer/
-        └── SKILL.md
+        └── SKILL.md             # Code review skill
+```
+
+**Verify all files exist:**
+
+```bash
+ls -la .claude/plugins/codebase-toolkit/.claude-plugin/
+ls -la .claude/plugins/codebase-toolkit/agents/
+ls -la .claude/plugins/codebase-toolkit/skills/code-reviewer/
 ```
 
 ---
 
-<a id="5c-package-plugin"></a>
-### 5C: Package Plugin
+<a id="5d-create-local-test-marketplace"></a>
+### 5D: Create Local Test Marketplace
 
-**Using skill-creator:**
+A marketplace is a directory containing a manifest that lists available plugins. We'll create a local one to test before publishing to GitHub.
 
-```
-/skill-creator
-
-Package the codebase-toolkit plugin located at .claude/plugins/codebase-toolkit/
-Include:
-- The PLUGIN.md manifest
-- Both subagents (service-documenter, bug-hunter)
-- The code-reviewer skill
-
-Create a distributable .skill file with validation.
-```
-
-**Manual Packaging (Alternative):**
+**Step 1: Create marketplace directory (sibling to the repo)**
 
 ```bash
-cd .claude/plugins/codebase-toolkit
-zip -r ../../../codebase-toolkit.skill .
-cd ../../..
+# From inside opentelemetry-demo, go up one level
+cd ..
+
+# Create the marketplace structure
+mkdir -p test-marketplace/.claude-plugin
 ```
 
-**Validate Package:**
+**Step 2: Create marketplace manifest**
 
-```bash
-# Check file exists
-ls -la codebase-toolkit.skill
+**File:** `test-marketplace/.claude-plugin/marketplace.json`
 
-# View contents
-unzip -l codebase-toolkit.skill
+```json
+{
+  "name": "test-marketplace",
+  "owner": {
+    "name": "Workshop Participant"
+  },
+  "plugins": [
+    {
+      "name": "codebase-toolkit",
+      "source": "../opentelemetry-demo/.claude/plugins/codebase-toolkit",
+      "description": "A toolkit for onboarding to new codebases"
+    }
+  ]
+}
 ```
 
-**Expected Contents:**
+**Directory structure after this step:**
 
 ```
-Archive:  codebase-toolkit.skill
-  Length      Date    Time    Name
----------  ---------- -----   ----
-      892  01-27-2026 10:00   PLUGIN.md
-      687  01-27-2026 10:00   agents/service-documenter.md
-      724  01-27-2026 10:00   agents/bug-hunter.md
-      983  01-27-2026 10:00   skills/code-reviewer/SKILL.md
----------                     -------
-     3286                     4 files
+~/workshop/                              # Or wherever you're working
+├── opentelemetry-demo/                  # The demo repo
+│   ├── src/
+│   └── .claude/
+│       └── plugins/
+│           └── codebase-toolkit/        # Your plugin
+│               ├── .claude-plugin/
+│               │   └── plugin.json
+│               ├── agents/
+│               └── skills/
+└── test-marketplace/                    # Local test marketplace
+    └── .claude-plugin/
+        └── marketplace.json
 ```
 
 ---
 
-<a id="5d-test-plugin-installation"></a>
-### 5D: Test Plugin Installation
+<a id="5e-install-and-test-plugin-locally"></a>
+### 5E: Install and Test Plugin Locally
 
-**Step 1: Uninstall Local Components**
+**Step 1: Remove manually installed components (clean slate)**
 
 ```bash
-rm ~/.claude/agents/service-documenter.md
-rm ~/.claude/agents/bug-hunter.md
+rm -f ~/.claude/agents/service-documenter.md
+rm -f ~/.claude/agents/bug-hunter.md
 rm -rf ~/.claude/skills/code-reviewer
 ```
 
-**Step 2: Install from Package**
+**Step 2: Go back to the demo repo and add the marketplace**
 
 ```bash
-# Create test directory
-mkdir -p ~/.claude/plugins/codebase-toolkit-test
-
-# Extract
-unzip codebase-toolkit.skill -d ~/.claude/plugins/codebase-toolkit-test/
-
-# Copy to active locations
-cp ~/.claude/plugins/codebase-toolkit-test/agents/* ~/.claude/agents/
-cp -r ~/.claude/plugins/codebase-toolkit-test/skills/* ~/.claude/skills/
+cd opentelemetry-demo
+claude
 ```
 
-**Step 3: Verify**
+```
+/plugin marketplace add ../test-marketplace
+```
+
+**Step 3: Install the plugin**
+
+```
+/plugin install codebase-toolkit@test-marketplace
+```
+
+Select "Install now" when prompted.
+
+**Step 4: Restart Claude Code**
+
+```bash
+# Exit and restart
+exit
+claude
+```
+
+**Step 5: Verify installation**
+
+```
+/help
+```
+
+You should see your plugin's components available.
+
+**Step 6: Test the plugin**
 
 ```
 /code-reviewer
 
-Briefly review src/cartservice for any obvious issues.
+Briefly review src/cartservice for code quality.
 ```
 
 ---
 
-<a id="5e-github-publishing"></a>
-### 5E: GitHub Publishing
+<a id="5f-publish-to-github-marketplace"></a>
+### 5F: Publish to GitHub Marketplace
 
-**Initialize and Push:**
+**GitHub Marketplace Repository:** `rishikeshradhakrishnan/marketplace`
+
+The marketplace repository structure:
+
+```
+marketplace/                              # GitHub repo
+├── .claude-plugin/
+│   └── marketplace.json                  # Marketplace manifest
+└── plugins/
+    └── codebase-toolkit/                 # Plugin copied here
+        ├── .claude-plugin/
+        │   └── plugin.json
+        ├── agents/
+        │   ├── service-documenter.md
+        │   └── bug-hunter.md
+        └── skills/
+            └── code-reviewer/
+                └── SKILL.md
+```
+
+**Step 1: Clone the marketplace repo**
 
 ```bash
-cd .claude/plugins/codebase-toolkit
+cd ~
+git clone https://github.com/rishikeshradhakrishnan/marketplace.git
+cd marketplace
+```
 
-# Initialize git
-git init
+**Step 2: Create the directory structure**
+
+```bash
+mkdir -p .claude-plugin
+mkdir -p plugins
+```
+
+**Step 3: Copy your plugin**
+
+```bash
+cp -r ~/workshop/opentelemetry-demo/.claude/plugins/codebase-toolkit plugins/
+```
+
+**Step 4: Create the marketplace manifest**
+
+**File:** `.claude-plugin/marketplace.json`
+
+```json
+{
+  "name": "rishikesh-marketplace",
+  "owner": {
+    "name": "Rishikesh Radhakrishnan"
+  },
+  "metadata": {
+    "description": "Claude Code plugins for developer productivity",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "codebase-toolkit",
+      "source": "./plugins/codebase-toolkit",
+      "description": "A toolkit for onboarding to new codebases. Includes parallel documentation, debugging, and code review.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Workshop Participant"
+      },
+      "keywords": ["documentation", "debugging", "code-review", "onboarding"]
+    }
+  ]
+}
+```
+
+**Step 5: Commit and push**
+
+```bash
 git add .
-git commit -m "Initial release of codebase-toolkit plugin v1.0.0"
-
-# Create GitHub repo and push
-gh repo create codebase-toolkit-plugin --public --source=. --push
+git commit -m "Add codebase-toolkit plugin v1.0.0"
+git push origin main
 ```
 
-**Installation Instructions for Others:**
+**Step 6: Add the GitHub marketplace to Claude Code**
 
 ```bash
-# Clone the plugin
-git clone https://github.com/USERNAME/codebase-toolkit-plugin ~/.claude/plugins/codebase-toolkit
+cd ~/workshop/opentelemetry-demo
+claude
+```
 
-# Install components
-cp ~/.claude/plugins/codebase-toolkit/agents/* ~/.claude/agents/
-cp -r ~/.claude/plugins/codebase-toolkit/skills/* ~/.claude/skills/
+```
+/plugin marketplace add rishikeshradhakrishnan/marketplace
 ```
 
 ---
 
-<a id="5f-marketplace-demo"></a>
-### 5F: Marketplace Demo
+<a id="5g-browse-existing-marketplaces"></a>
+### 5G: Browse Existing Marketplaces
 
-**List Available Plugins:**
+**Add Anthropic's official demo marketplace:**
+
+```
+/plugin marketplace add anthropics/claude-code
+```
+
+**Browse available plugins:**
+
+```
+/plugin
+```
+
+Select "Browse Plugins" to see available options.
+
+**List all known marketplaces:**
+
+```
+/plugin marketplace list
+```
+
+**Available Marketplaces:**
+
+| Marketplace | Source | Description |
+|-------------|--------|-------------|
+| anthropics/claude-code | GitHub | Official Anthropic demo plugins |
+| rishikeshradhakrishnan/marketplace | GitHub | Workshop plugins |
+| test-marketplace | Local | Local testing |
+
+---
+
+<a id="phase-6-reusability-demo"></a>
+## Phase 6: Reusability Demo
+
+<a id="6a-clone-fresh-repository"></a>
+### 6A: Clone Fresh Repository
+
+**Step 1: Navigate to a new directory**
 
 ```bash
-claude /plugins
+cd ~
+mkdir plugin-demo
+cd plugin-demo
 ```
 
-**Key Marketplace Plugins:**
+**Step 2: Clone the OpenTelemetry demo fresh (main branch, no modifications)**
 
-| Plugin | Purpose | Demo Command |
-|--------|---------|--------------|
-| document-skills | Create DOCX, PPTX, XLSX, PDF | `Create a DOCX spec for a new feature` |
-| claude-md-management | Manage CLAUDE.md files | `Update CLAUDE.md with project conventions` |
-| claude-code-setup | Bootstrap new projects | `Set up a new Python project` |
-| code-review | Professional code review | `Review this PR for issues` |
-
-**Document Skills Demo:**
-
-```
-Use the document skills to create a DOCX specification 
-for the wishlist feature we built earlier.
-Include requirements, API design, and implementation notes.
+```bash
+git clone https://github.com/open-telemetry/opentelemetry-demo.git
+cd opentelemetry-demo
 ```
 
 ---
 
-<a id="reference-materials"></a>
-## Reference Materials
+<a id="6b-install-plugin-from-marketplace"></a>
+### 6B: Install Plugin from Marketplace
 
-### Complete Directory Structure
+**Step 1: Start Claude Code**
+
+```bash
+claude
+```
+
+**Step 2: Add the GitHub marketplace**
 
 ```
-Project Directory:
-.claude/
-├── agents/                              # Active agents (copied here)
-│   ├── service-documenter.md
-│   └── bug-hunter.md
-├── plugins/
-│   └── codebase-toolkit/               # Plugin source
-│       ├── PLUGIN.md
-│       ├── agents/
-│       │   ├── service-documenter.md
-│       │   └── bug-hunter.md
-│       └── skills/
-│           └── code-reviewer/
-│               └── SKILL.md
-└── settings.json                        # MCP configuration (if local)
+/plugin marketplace add rishikeshradhakrishnan/marketplace
+```
 
-User Directory (~/.claude/):
-├── agents/                              # Active agents
-│   ├── service-documenter.md
-│   └── bug-hunter.md
-├── skills/                              # Active skills
-│   └── code-reviewer/
+**Step 3: Install the plugin**
+
+```
+/plugin install codebase-toolkit@rishikesh-marketplace
+```
+
+**Step 4: Restart Claude Code**
+
+```bash
+exit
+claude
+```
+
+---
+
+<a id="6c-use-plugin-on-new-codebase"></a>
+### 6C: Use Plugin on New Codebase
+
+**Option 1: Use the code-reviewer skill**
+
+```
+/code-reviewer
+
+Review the src/frontend directory for code quality issues.
+Focus on error handling and TypeScript best practices.
+```
+
+**Option 2: Use the service-documenter subagent**
+
+```
+Use the service-documenter subagent to document 
+src/checkoutservice and src/paymentservice in parallel.
+Create a combined services documentation file.
+```
+
+**Option 3: Use bug-hunter for parallel debugging**
+
+```
+Use 3 bug-hunter subagents in parallel to investigate:
+- src/cartservice
+- src/productcatalogservice  
+- src/recommendationservice
+
+Compile findings into a prioritized report.
+```
+
+---
+
+## Updates to Reference Materials Section
+
+### Replace "Complete Directory Structure" with:
+
+```
+### Plugin Directory Structure
+
+```
+my-plugin/
+├── .claude-plugin/
+│   └── plugin.json              # Required: Plugin manifest
+├── agents/                       # Optional: Subagent definitions
+│   └── my-agent.md
+├── skills/                       # Optional: Skill definitions
+│   └── my-skill/
 │       └── SKILL.md
-├── plugins/                             # Installed plugins
-│   └── codebase-toolkit/
-└── settings.json                        # MCP configuration
+├── commands/                     # Optional: Custom slash commands
+│   └── my-command.md
+└── hooks/                        # Optional: Event handlers
+    └── hooks.json
 ```
 
-### Command Quick Reference
+### Marketplace Directory Structure
+
+```
+marketplace-repo/
+├── .claude-plugin/
+│   └── marketplace.json         # Required: Marketplace manifest
+└── plugins/                      # Plugin directories
+    ├── plugin-one/
+    │   ├── .claude-plugin/
+    │   │   └── plugin.json
+    │   └── ...
+    └── plugin-two/
+        └── ...
+```
+```
+
+### Replace "Command Quick Reference" with:
 
 | Command | Purpose |
 |---------|---------|
 | `claude` | Start interactive session |
 | `claude --version` | Check version |
-| `/skills` | List available skills |
-| `/plugins` | List installed plugins |
+| `/plugin` | Open plugin management menu |
+| `/plugin marketplace add <source>` | Add a marketplace |
+| `/plugin marketplace list` | List known marketplaces |
+| `/plugin install <name>@<marketplace>` | Install a plugin |
+| `/plugin uninstall <name>@<marketplace>` | Remove a plugin |
+| `/help` | List available commands |
 | `/code-reviewer` | Invoke code-reviewer skill |
-| `/skill-creator` | Create/package skills |
-| `/context` | Show current context |
-| `/clear` | Reset conversation |
 
-### Subagent File Template
+### Add new reference template:
 
-```markdown
----
-name: agent-name
-description: What this agent does. When Claude should use it.
-tools: Read, Grep, Glob
-model: sonnet
----
-
-Instructions for the agent...
-```
-
-### Skill File Template
-
-```markdown
----
-name: skill-name
-description: What this skill does. When Claude should use it.
----
-
-# Skill Title
-
-Instructions for using the skill...
-```
-
-### MCP Settings Template
+### Plugin Manifest Template (plugin.json)
 
 ```json
 {
-  "mcpServers": {
-    "server-name": {
-      "command": "npx",
-      "args": ["-y", "@anthropic/mcp-server-name", "arg1"],
-      "env": {
-        "ENV_VAR": "value"
-      }
-    }
-  }
+  "name": "plugin-name",
+  "description": "What the plugin does",
+  "version": "1.0.0",
+  "author": {
+    "name": "Author Name"
+  },
+  "keywords": ["tag1", "tag2"]
 }
 ```
 
-### Troubleshooting
+### Marketplace Manifest Template (marketplace.json)
+
+```json
+{
+  "name": "marketplace-name",
+  "owner": {
+    "name": "Owner Name"
+  },
+  "plugins": [
+    {
+      "name": "plugin-name",
+      "source": "./plugins/plugin-name",
+      "description": "Plugin description"
+    }
+  ]
+}
+```
+
+### Update Troubleshooting table:
 
 | Issue | Solution |
 |-------|----------|
-| Subagent not found | Verify file in `~/.claude/agents/` with `.md` extension |
-| Skill not found | Verify `SKILL.md` in `~/.claude/skills/[name]/` |
+| Subagent not found | Verify file in `agents/` with `.md` extension, restart Claude |
+| Skill not found | Verify `SKILL.md` in `skills/[name]/` directory |
 | MCP not connecting | Check Node.js installed, verify settings.json syntax |
 | Parallel tasks sequential | Be explicit: "run in parallel" or "use N parallel tasks" |
 | Rate limiting | Reduce parallel count from 4 to 2 |
-| Package validation fails | Check YAML frontmatter syntax, ensure all files exist |
+| Plugin install fails | Check `.claude-plugin/plugin.json` exists |
+| Marketplace not found | Verify `.claude-plugin/marketplace.json` path and JSON syntax |
+| "Invalid schema" error | Check `source` path is correct relative to marketplace.json |
