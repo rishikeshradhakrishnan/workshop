@@ -600,37 +600,6 @@ Use the Filesystem MCP to:
 <a id="4d-participant-mcp-setup"></a>
 ### 4D: Participant MCP Setup
 
-**Step 1: Create/Edit settings.json**
-
-```bash
-# Check if file exists
-cat ~/.claude/settings.json
-
-# Create directory if needed
-mkdir -p ~/.claude
-
-# Create minimal config
-cat > ~/.claude/settings.json << 'EOF'
-{
-    "mcpServers": {
-        "playwright": {
-        "command": "npx",
-        "args": ["-y", "@anthropic/mcp-server-playwright"]
-        }
-    }
-}
-EOF
-```
-
-**Step 2: Restart Claude Code**
-
-```bash
-# Exit current session
-exit
-
-# Start fresh<a id="4d-participant-mcp-setup"></a>
-### 4D: Participant MCP Setup
-
 **Step 1: Verify Node.js is installed**
 ```bash
 node --version
