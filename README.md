@@ -55,7 +55,7 @@ The **Codebase Toolkit** plugin includes three core components:
 
 - Create and orchestrate subagents for parallel processing
 - Build reusable skills for specialized procedures
-- Configure MCP servers (Filesystem, GitHub, Playwright)
+- Configure MCP servers (GitHub, Playwright)
 - Package plugins for distribution
 - Explore the Claude Code marketplace
 

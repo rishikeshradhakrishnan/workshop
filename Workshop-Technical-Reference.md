@@ -463,10 +463,6 @@ First show me your implementation plan, then build it.
 ```json
 {
   "mcpServers": {
-    "filesystem": {
-      "command": "npx",
-      "args": ["-y", "@anthropic/mcp-server-filesystem", "."]
-    },
     "github": {
       "command": "npx",
       "args": ["-y", "@anthropic/mcp-server-github"],
@@ -487,9 +483,9 @@ First show me your implementation plan, then build it.
 ```json
 {
   "mcpServers": {
-    "filesystem": {
+    "playwright": {
       "command": "npx",
-      "args": ["-y", "@anthropic/mcp-server-filesystem", "."]
+      "args": ["-y", "@anthropic/mcp-server-playwright"]
     }
   }
 }
@@ -499,7 +495,6 @@ First show me your implementation plan, then build it.
 
 | Server | Purpose | Requirements |
 |--------|---------|--------------|
-| Filesystem | Safe file operations outside repo | Node.js |
 | GitHub | Repo operations, PRs, issues | GitHub token |
 | Playwright | Browser automation, screenshots | Node.js |
 
@@ -507,12 +502,6 @@ First show me your implementation plan, then build it.
 
 <a id="4c-mcp-demo-prompts"></a>
 ### 4C: MCP Demo Prompts
-
-**Filesystem MCP:**
-
-```
-List all markdown files in the current directory using the filesystem MCP
-```
 
 **Playwright MCP:**
 
@@ -550,12 +539,12 @@ mkdir -p ~/.claude
 # Create minimal config
 cat > ~/.claude/settings.json << 'EOF'
 {
-  "mcpServers": {
-    "filesystem": {
-      "command": "npx",
-      "args": ["-y", "@anthropic/mcp-server-filesystem", "."]
+    "mcpServers": {
+        "playwright": {
+        "command": "npx",
+        "args": ["-y", "@anthropic/mcp-server-playwright"]
+        }
     }
-  }
 }
 EOF
 ```
@@ -573,7 +562,7 @@ claude
 **Step 3: Verify**
 
 ```
-List all files in the current directory using the filesystem MCP
+Open the application to verify if its launched successfully. Use the address http://localhost:8080
 ```
 
 ---
@@ -581,16 +570,16 @@ List all files in the current directory using the filesystem MCP
 <a id="4e-participant-development-exercises"></a>
 ### 4E: Participant Development Exercises
 
-**Task A — New API Endpoint:**
+**Task A — New Feature:**
 
 ```
-Add a "search products" endpoint to productcatalogservice:
-- Accept a search query string
-- Filter products by name or description
-- Return matching products sorted by relevance
-- Include proper error handling
+Add a "wishlist" feature to this application:
+1. Users can save products for later
+2. Store wishlist data using the existing cart service patterns
+3. Add API endpoints to the frontend service
+4. Follow the existing code patterns in this repo
 
-Show me your plan first, then implement it.
+First show me your implementation plan, then build it.
 ```
 
 **Task B — Refactoring:**
@@ -604,15 +593,16 @@ Refactor src/cartservice to improve code quality:
 Keep all existing functionality working.
 ```
 
-**Task C — New Feature:**
+**Task C — New API Endpoint:**
 
 ```
-Add a "recently viewed products" feature:
-- Track the last 10 products a user viewed
-- Store in memory
-- Add an API endpoint to retrieve the list
+Add a "search products" endpoint to productcatalogservice:
+- Accept a search query string
+- Filter products by name or description
+- Return matching products sorted by relevance
+- Include proper error handling
 
-Follow the patterns used in the cart service.
+Show me your plan first, then implement it.
 ```
 
 ---
