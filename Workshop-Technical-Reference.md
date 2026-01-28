@@ -957,15 +957,7 @@ exit
 claude
 ```
 
-**Step 5: Verify installation**
-
-```
-/help
-```
-
-You should see your plugin's components available.
-
-**Step 6: Test the plugin**
+**Step 5:  Test the plugin**
 
 ```
 /code-reviewer
