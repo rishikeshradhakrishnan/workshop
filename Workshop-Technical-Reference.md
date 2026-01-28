@@ -872,6 +872,7 @@ cd ..
 
 # Create the marketplace structure
 mkdir -p test-marketplace/.claude-plugin
+cp -r opentelemery-demo/.claude/plugins/codebase-toolkit test-marketplace
 ```
 
 **Step 2: Create marketplace manifest**
@@ -887,7 +888,7 @@ mkdir -p test-marketplace/.claude-plugin
   "plugins": [
     {
       "name": "codebase-toolkit",
-      "source": "../opentelemetry-demo/.claude/plugins/codebase-toolkit",
+      "source": "./codebase-toolkit",
       "description": "A toolkit for onboarding to new codebases"
     }
   ]
@@ -897,19 +898,17 @@ mkdir -p test-marketplace/.claude-plugin
 **Directory structure after this step:**
 
 ```
-~/workshop/                              # Or wherever you're working
-├── opentelemetry-demo/                  # The demo repo
-│   ├── src/
-│   └── .claude/
-│       └── plugins/
-│           └── codebase-toolkit/        # Your plugin
-│               ├── .claude-plugin/
-│               │   └── plugin.json
-│               ├── agents/
-│               └── skills/
-└── test-marketplace/                    # Local test marketplace
-    └── .claude-plugin/
-        └── marketplace.json
+~/workshop/
+├── opentelemetry-demo/              # Cloned demo repo (work happens here)
+└── test-marketplace/                # This becomes your GitHub marketplace
+    ├── .claude-plugin/
+    │   └── marketplace.json         # source: "./codebase-toolkit"
+    └── codebase-toolkit/            # Plugin lives inside marketplace
+        ├── .claude-plugin/
+        │   └── plugin.json
+        ├── agents/
+        ├── skills/
+        └── hooks/
 ```
 
 ---
@@ -923,6 +922,12 @@ mkdir -p test-marketplace/.claude-plugin
 rm -f ~/.claude/agents/service-documenter.md
 rm -f ~/.claude/agents/bug-hunter.md
 rm -rf ~/.claude/skills/code-reviewer
+
+# Clean from Opentelemetry Demo as well if installed.
+cd opentelemetry-demo
+rm -f .claude/agents/service-documenter.md
+rm -f .claude/agents/bug-hunter.md
+rm -rf .claude/skills/code-reviewer
 ```
 
 **Step 2: Go back to the demo repo and add the marketplace**
