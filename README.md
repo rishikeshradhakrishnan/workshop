@@ -65,10 +65,10 @@ The **Codebase Toolkit** plugin includes three core components:
 ## Usage
 
 ### For Facilitators
-| Start with `Workshop-Facilitator-Guide.md` for the structured delivery outline with timing and talk tracks. - WIP
+> WIP 
 
 ### For Participants
-Follow `Workshop-Prompts-Participant.md` for hands-on exercises during the workshop.
+> WIP 
 
 ### For Self-paced Learning
 Use `Workshop-Technical-Reference.md` alongside the participant guide for comprehensive self-study.
