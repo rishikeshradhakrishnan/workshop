@@ -46,10 +46,7 @@ The **Codebase Toolkit** plugin includes three core components:
 
 | File | Description |
 |------|-------------|
-| `Workshop-Facilitator-Guide.md` | Talk tracks, timing cues, and transitions for workshop delivery |
 | `Workshop-Technical-Reference.md` | Complete technical content, code snippets, and configuration examples |
-| `Workshop-Prompts-Participant.md` | Step-by-step participant guide with exercises |
-| `Workshop-Prompts-Instructor.md` | Instructor-specific guidance with demonstration sequences |
 
 ## Key Learning Outcomes
 
