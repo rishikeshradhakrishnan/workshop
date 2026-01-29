@@ -331,16 +331,7 @@ Analyze src/paymentservice to find potential issues.
 Check for error handling gaps, race conditions, and edge cases.
 ```
 
-**Option B - Injected Bug:**
-
-Before workshop, add to `src/paymentservice/charge.js`:
-
-```javascript
-// Add inside the charge function
-if (Math.random() < 0.3) throw new Error("Connection timeout");
-```
-
-**Prompt for injected bug:**
+**Option B - Prompt for injected bug:**
 
 ```
 Users are reporting random payment failures in production.
@@ -1185,3 +1176,11 @@ Compile findings into a prioritized report.
 ```
 
 ---
+
+Notes:
+Before workshop, add to `src/paymentservice/charge.js:` for bug simulation.
+
+```
+// Add inside the charge function
+if (Math.random() < 0.3) throw new Error("Connection timeout");
+```
