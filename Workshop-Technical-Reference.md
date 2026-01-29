@@ -169,6 +169,11 @@ cp .claude/plugins/codebase-toolkit/agents/service-documenter.md .claude/agents/
 <a id="1d-parallel-subagents-demo"></a>
 ### 1D: Parallel Subagents Demo
 
+**Check Context Usage**
+
+```/context```
+
+
 **Prompt:**
 
 ```
@@ -188,6 +193,10 @@ Then combine all findings into a comprehensive ARCHITECTURE.md
 - 4 parallel `Task(...)` indicators appear
 - Each completes independently
 - Results synthesized into single document
+
+**Check Context Usage Again**
+
+```/context```
 
 ---
 
