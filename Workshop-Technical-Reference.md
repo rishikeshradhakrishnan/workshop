@@ -3,8 +3,6 @@
 **Duration:** 90 minutes | **Format:** Instructor-led, live coding  
 **Repo:** [opentelemetry-demo](https://github.com/rishikeshradhakrishnan/opentelemery-demo)
 
-> 📘 **Note:** This document contains all technical content, prompts, and code snippets. Use alongside the [Facilitator Guide](Workshop-Facilitator-Guide.md) for talk tracks and transitions.
-
 ---
 
 ## Table of Contents
