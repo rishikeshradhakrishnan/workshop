@@ -54,7 +54,7 @@
 claude --version
 
 # Clone the repository
-git clone https://github.com/rishikeshradhakrishnan/opentelemery-demo.git
+git clone https://github.com/rishikeshradhakrishnan/opentelemetry-demo
 cd opentelemetry-demo
 
 # Verify Node.js (needed for MCP in Phase 4)
