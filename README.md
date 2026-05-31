@@ -6,13 +6,14 @@ A comprehensive 90-minute workshop curriculum that teaches developers how to bui
 
 | | |
 |---|---|
-| **Version** | 2.0.0.b |
-| **Last Updated** | January 2026 |
-| **Claude Code** | Compatible with latest version |
-| **Status** | Beta |
+| **Version** | 3.0.0 |
+| **Last Updated** | May 2026 |
+| **Claude Code** | Compatible with 2.1.x (Opus 4.8) |
+| **Status** | Current |
 
 ### Changelog
 
+- **v3.0.0** - Modular curriculum covering Claude Code 2.1.x, Opus 4.5 → 4.8 model capabilities, agent orchestration (teams/workflows), and Claude Managed Agents + Agent SDK (see `Workshop-Technical-Reference-v3.md`)
 - **v2.0.0.b** - Complete workshop restructure with 5-phase curriculum (Beta)
 - **v1.0.0** - Initial workshop release
 
@@ -46,7 +47,8 @@ The **Codebase Toolkit** plugin includes three core components:
 
 | File | Description |
 |------|-------------|
-| `Workshop-Technical-Reference.md` | Complete technical content, code snippets, and configuration examples |
+| `Workshop-Technical-Reference-v3.md` | **Current version** — modular curriculum covering Claude Code 2.1.x, Opus 4.5 → 4.8, multi-agent orchestration, and Claude Managed Agents |
+| `Workshop-Technical-Reference.md` | Previous version (v2) — original 6-phase, 90-minute curriculum |
 
 ## Key Learning Outcomes
 
