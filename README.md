@@ -1,19 +1,21 @@
 # Claude Code Workshop: Building Plugins from Scratch
 
+> ⚠️ **Work in Progress:** Version 3 of the workshop content (`Workshop-Technical-Reference-v3.md`) is **not yet released** and is under active development. For current workshop deliveries, use the released v2 reference (`Workshop-Technical-Reference.md`).
+
 A comprehensive 90-minute workshop curriculum that teaches developers how to build production-grade Claude Code plugins. Participants create a "Codebase Toolkit" plugin with subagents, skills, and MCP server integrations.
 
 ## Version
 
 | | |
 |---|---|
-| **Version** | 3.0.0 |
+| **Version** | 3.0.0 (Work in Progress) |
 | **Last Updated** | May 2026 |
 | **Claude Code** | Compatible with 2.1.x (Opus 4.8) |
-| **Status** | Current |
+| **Status** | v3: Work in Progress — not yet released · v2: Released |
 
 ### Changelog
 
-- **v3.0.0** - Modular curriculum covering Claude Code 2.1.x, Opus 4.5 → 4.8 model capabilities, agent orchestration (teams/workflows), and Claude Managed Agents + Agent SDK (see `Workshop-Technical-Reference-v3.md`)
+- **v3.0.0** *(Work in Progress — not yet released)* - Modular curriculum covering Claude Code 2.1.x, Opus 4.5 → 4.8 model capabilities, agent orchestration (teams/workflows), and Claude Managed Agents + Agent SDK (see `Workshop-Technical-Reference-v3.md`)
 - **v2.0.0.b** - Complete workshop restructure with 5-phase curriculum (Beta)
 - **v1.0.0** - Initial workshop release
 
@@ -47,8 +49,8 @@ The **Codebase Toolkit** plugin includes three core components:
 
 | File | Description |
 |------|-------------|
-| `Workshop-Technical-Reference-v3.md` | **Current version** — modular curriculum covering Claude Code 2.1.x, Opus 4.5 → 4.8, multi-agent orchestration, and Claude Managed Agents |
-| `Workshop-Technical-Reference.md` | Previous version (v2) — original 6-phase, 90-minute curriculum |
+| `Workshop-Technical-Reference-v3.md` | ⚠️ **Work in Progress — not yet released.** Modular curriculum covering Claude Code 2.1.x, Opus 4.5 → 4.8, multi-agent orchestration, and Claude Managed Agents |
+| `Workshop-Technical-Reference.md` | **Released (v2)** — original 6-phase, 90-minute curriculum. Use this for current workshop deliveries |
 
 ## Key Learning Outcomes
 
