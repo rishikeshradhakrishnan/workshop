@@ -4,6 +4,11 @@
 **Repo:** [opentelemetry-demo](https://github.com/rishikeshradhakrishnan/opentelemery-demo)
 **Updated:** May 2026 — covers Claude Code 2.1.x, Claude Opus 4.8, Claude Managed Agents & the Agent SDK
 
+> ⚠️ **WORK IN PROGRESS — NOT YET RELEASED**
+> This v3 content is under active development and has **not** been released for workshop delivery.
+> Commands, module structure, and feature coverage may change before release.
+> For current workshop deliveries, use [Workshop-Technical-Reference.md](Workshop-Technical-Reference.md) (v2).
+
 ---
 
 ## What's New in v3
@@ -175,37 +180,15 @@ list of caller -> callee pairs with file references.
 
 ---
 
-### 1C: Plugin Directory Setup
+### 1C: Service-Documenter Subagent
 
-**Commands:**
+Subagents are just markdown files in `.claude/agents/` — one file per agent. Create the directory and your first agent:
 
 ```bash
-# Create the plugin directory structure
-mkdir -p .claude/plugins/codebase-toolkit/agents
-mkdir -p .claude/plugins/codebase-toolkit/skills
-
-# Also create local agents directory for immediate use
 mkdir -p .claude/agents
 ```
 
-**Resulting Structure:**
-
-```
-.claude/
-├── agents/                              # Local active agents
-└── plugins/
-    └── codebase-toolkit/               # Our plugin project
-        ├── agents/                      # Plugin agents
-        └── skills/                      # Plugin skills
-```
-
-> **Tip (2026):** You can also scaffold a plugin directly with `claude plugin init codebase-toolkit` — covered in Module 7.
-
----
-
-### 1D: Service-Documenter Subagent
-
-**File:** `.claude/plugins/codebase-toolkit/agents/service-documenter.md`
+**File:** `.claude/agents/service-documenter.md`
 
 ```markdown
 ---
@@ -247,11 +230,9 @@ Output a concise markdown summary with:
 
 > Only `name` and `description` are required. Start simple; add fields as you need them.
 
-**Installation Command:**
+The agent is active as soon as the file is saved — no installation step needed.
 
-```bash
-cp .claude/plugins/codebase-toolkit/agents/service-documenter.md .claude/agents/
-```
+> **Looking ahead:** in Module 7 you'll package this agent (and everything else you build today) into a distributable plugin — in one step, at the end. For now, just build and use it.
 
 You can also create and manage subagents interactively with:
 
@@ -261,7 +242,7 @@ You can also create and manage subagents interactively with:
 
 ---
 
-### 1E: Parallel Subagents Demo
+### 1D: Parallel Subagents Demo
 
 **Check Context Usage**
 
@@ -305,7 +286,7 @@ Then combine all findings into a comprehensive ARCHITECTURE.md
 
 ---
 
-### 1F: Participant Parallel Exercise
+### 1E: Participant Parallel Exercise
 
 **Prompt:**
 
@@ -327,7 +308,7 @@ Synthesize findings into a summary.
 **Success Criteria:**
 - Participant sees parallel `Task(...)` execution
 - Receives combined summary
-- Has `service-documenter.md` in plugin folder
+- Has `service-documenter.md` in `.claude/agents/`
 
 ---
 
@@ -499,7 +480,7 @@ Cycle with `Shift+Tab` or set at startup with `--permission-mode <mode>`.
 | `/cost` | Estimated cost of the session |
 | `/status` | Account, model, and settings overview |
 
-**Demo:** run `/context` after the parallel subagent demo (Module 1E) — show how subagent work does *not* bloat the main context.
+**Demo:** run `/context` after the parallel subagent demo (Module 1D) — show how subagent work does *not* bloat the main context.
 
 ---
 
@@ -731,7 +712,7 @@ Show me the problematic code and propose a fix.
 
 ### 4B: Bug-Hunter Subagent
 
-**File:** `.claude/plugins/codebase-toolkit/agents/bug-hunter.md`
+**File:** `.claude/agents/bug-hunter.md`
 
 ```markdown
 ---
@@ -759,11 +740,7 @@ Always include specific file paths and line numbers.
 Suggest a fix for each critical and warning issue.
 ```
 
-**Installation Command:**
-
-```bash
-cp .claude/plugins/codebase-toolkit/agents/bug-hunter.md .claude/agents/
-```
+The agent is active as soon as the file is saved — no installation step needed.
 
 ---
 
@@ -853,7 +830,7 @@ Combine into a single report ordered by severity.
 **Success Criteria:**
 - Parallel debugging executed
 - Issues identified with file:line references
-- Has `bug-hunter.md` in plugin folder
+- Has `bug-hunter.md` in `.claude/agents/`
 - Has run `/code-review` at least once
 
 ---
@@ -1298,15 +1275,19 @@ Claude Code also runs as a managed cloud service — useful when you want agents
 
 **Time:** 25 min | **Prerequisites:** Modules 1, 4 (the agents you'll package)
 
+So far, everything you've built — `service-documenter` (Module 1) and `bug-hunter` (Module 4) — lives directly in this project's `.claude/` directory and just works. In this module you'll add one more component (a skill), then **package all of it into a distributable plugin in a single step (7B)**. Build first, package once at the end.
+
 ### 7A: Code-Reviewer Skill
+
+Skills are reusable procedures, structured the same way as agents: one directory per skill in `.claude/skills/`, with a `SKILL.md` inside.
 
 **Directory Setup:**
 
 ```bash
-mkdir -p .claude/plugins/codebase-toolkit/skills/code-reviewer
+mkdir -p .claude/skills/code-reviewer
 ```
 
-**File:** `.claude/plugins/codebase-toolkit/skills/code-reviewer/SKILL.md`
+**File:** `.claude/skills/code-reviewer/SKILL.md`
 
 ```markdown
 ---
@@ -1374,38 +1355,49 @@ Include file paths and line numbers for each finding.
 | `$name` | Named argument (when `arguments:` is declared) |
 | `` !`command` `` | Output of a shell command, injected before Claude sees the prompt |
 
-**Installation Commands:**
-
-```bash
-mkdir -p ~/.claude/skills/code-reviewer
-cp .claude/plugins/codebase-toolkit/skills/code-reviewer/SKILL.md ~/.claude/skills/code-reviewer/
-```
-
 **Test Prompt:**
 
 ```
 /code-reviewer src/paymentservice
 ```
 
+The skill is active as soon as the file is saved — no installation step needed.
+
 > **Note:** `/commands/` (the old custom slash-command directory) has merged into skills. If you used custom commands in v2, move them to `.claude/skills/<name>/SKILL.md`.
 
 ---
 
-### 7B: Plugin Manifest (plugin.json)
+### 7B: Assemble the Plugin (One Step)
 
-**Option 1 — Scaffold automatically (NEW):**
+You now have three working components, all living in this project's `.claude/` directory:
 
-```bash
-claude plugin init codebase-toolkit
-```
+| Component | Type | Location | Built in |
+|-----------|------|----------|----------|
+| `service-documenter` | Subagent | `.claude/agents/service-documenter.md` | Module 1 |
+| `bug-hunter` | Subagent | `.claude/agents/bug-hunter.md` | Module 4 |
+| `code-reviewer` | Skill | `.claude/skills/code-reviewer/SKILL.md` | Module 7A |
 
-**Option 2 — Create manually:**
+A **plugin** is nothing more than these same files arranged in a standard, distributable layout with a manifest. Assemble it now — this is the only plugin-structure step in the whole workshop:
 
-**File:** `.claude/plugins/codebase-toolkit/.claude-plugin/plugin.json`
+**Step 1: Create the plugin layout**
 
 ```bash
 mkdir -p .claude/plugins/codebase-toolkit/.claude-plugin
+mkdir -p .claude/plugins/codebase-toolkit/agents
+mkdir -p .claude/plugins/codebase-toolkit/skills
 ```
+
+**Step 2: Copy your components into it**
+
+```bash
+cp .claude/agents/service-documenter.md .claude/plugins/codebase-toolkit/agents/
+cp .claude/agents/bug-hunter.md .claude/plugins/codebase-toolkit/agents/
+cp -r .claude/skills/code-reviewer .claude/plugins/codebase-toolkit/skills/
+```
+
+**Step 3: Create the plugin manifest**
+
+**File:** `.claude/plugins/codebase-toolkit/.claude-plugin/plugin.json`
 
 ```json
 {
@@ -1419,9 +1411,11 @@ mkdir -p .claude/plugins/codebase-toolkit/.claude-plugin
 }
 ```
 
+> **Shortcut:** `claude plugin init codebase-toolkit` scaffolds Steps 1 and 3 automatically — you'd then only copy your components in (Step 2).
+
 ---
 
-### 7C: Complete Plugin Structure
+### 7C: Verify and Validate the Plugin
 
 **Verify your plugin has this structure:**
 
@@ -1510,14 +1504,11 @@ cp -r opentelemetry-demo/.claude/plugins/codebase-toolkit test-marketplace
 
 ### 7E: Install and Test Plugin Locally
 
-**Step 1: Remove manually installed components (clean slate)**
+**Step 1: Remove the working copies (clean slate)**
+
+Your components now exist in two places: the working copies you built in Modules 1, 4, and 7A, and the copies inside the plugin (7B). Remove the working copies so you can prove the plugin alone provides them:
 
 ```bash
-rm -f ~/.claude/agents/service-documenter.md
-rm -f ~/.claude/agents/bug-hunter.md
-rm -rf ~/.claude/skills/code-reviewer
-
-# Clean from the demo repo as well if installed
 cd opentelemetry-demo
 rm -f .claude/agents/service-documenter.md
 rm -f .claude/agents/bug-hunter.md
@@ -2175,13 +2166,13 @@ Reference for instructors. All dates and capabilities verified against Anthropic
 |---------|--------|
 | Overall structure | "Phases" → self-contained "Modules" with timings and suggested tracks; no fixed 90-minute constraint |
 | Module 0 | Added `claude doctor`, `claude update`, model/effort verification, model alias table |
-| Module 1 | Added built-in subagents (Explore) demo (1B); subagent frontmatter updated with 2026 fields; added `/usage` |
+| Module 1 | Added built-in subagents (Explore) demo (1B); subagent frontmatter updated with 2026 fields; added `/usage`; agents now built directly in `.claude/agents/` — plugin packaging deferred to Module 7 |
 | Module 2 | **New module** — plan mode, effort/adaptive thinking, checkpoints & rewind, memory & rules, permission modes (incl. Auto mode), context/cost commands, output styles |
 | Module 3 | Was Phase 2. Added `/verify` & `/run` (3C) and hooks (3D); exercises now require running the tests |
 | Module 4 | Was Phase 3. Added built-in `/code-review`, `/security-review`, `/simplify` and security-guidance plugin (4D) |
 | Module 5 | Was Phase 4. Feature demo now uses plan mode; MCP section updated: current Playwright MCP package, env-var expansion, tool search/deferred loading |
 | Module 6 | **New module** — background tasks, agent view, agent teams, workflows, `/goal`, `/loop`, Claude Code on the web |
-| Module 7 | Was Phase 5. Skill frontmatter updated (arguments, `context: fork`, substitutions); `claude plugin init/validate`, `--plugin-dir`, `/reload-plugins`, namespaced skill invocation, community marketplace submission |
+| Module 7 | Was Phase 5. Plugin assembly consolidated into a single step (7B) at the end — components are built in their native `.claude/` locations first, then packaged once. Skill frontmatter updated (arguments, `context: fork`, substitutions); `claude plugin init/validate`, `--plugin-dir`, `/reload-plugins`, namespaced skill invocation, community marketplace submission |
 | Module 8 | Was Phase 6. Updated install flow (`/reload-plugins` instead of restart) |
 | Module 9 | **New module** — Claude Managed Agents (concepts, quickstart, pricing), Agent SDK, `ant` CLI, headless mode |
 | Appendix A | **New** — model timeline Opus 4.5 → 4.8 with API capabilities |
