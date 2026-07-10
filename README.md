@@ -9,13 +9,13 @@ A comprehensive 90-minute workshop curriculum that teaches developers how to bui
 | | |
 |---|---|
 | **Version** | 3.0.0 (Work in Progress) |
-| **Last Updated** | May 2026 |
-| **Claude Code** | Compatible with 2.1.x (Opus 4.8) |
+| **Last Updated** | July 2026 |
+| **Claude Code** | Compatible with 2.1.2xx (Claude Fable 5 / Sonnet 5 / Opus 4.8) |
 | **Status** | v3: Work in Progress — not yet released · v2: Released |
 
 ### Changelog
 
-- **v3.0.0** *(Work in Progress — not yet released)* - Modular curriculum covering Claude Code 2.1.x, Opus 4.5 → 4.8 model capabilities, agent orchestration (teams/workflows), and Claude Managed Agents + Agent SDK (see `Workshop-Technical-Reference-v3.md`)
+- **v3.0.0** *(Work in Progress — not yet released)* - Modular curriculum covering Claude Code 2.1.2xx, Opus 4.5 → Claude Fable 5 model capabilities, agent orchestration (teams/workflows/`ultracode`), and Claude Managed Agents + Agent SDK (see `Workshop-Technical-Reference-v3.md`)
 - **v2.0.0.b** - Complete workshop restructure with 5-phase curriculum (Beta)
 - **v1.0.0** - Initial workshop release
 
@@ -49,7 +49,7 @@ The **Codebase Toolkit** plugin includes three core components:
 
 | File | Description |
 |------|-------------|
-| `Workshop-Technical-Reference-v3.md` | ⚠️ **Work in Progress — not yet released.** Modular curriculum covering Claude Code 2.1.x, Opus 4.5 → 4.8, multi-agent orchestration, and Claude Managed Agents |
+| `Workshop-Technical-Reference-v3.md` | ⚠️ **Work in Progress — not yet released.** Modular curriculum covering Claude Code 2.1.2xx, Opus 4.5 → Claude Fable 5, multi-agent orchestration, and Claude Managed Agents |
 | `Workshop-Technical-Reference.md` | **Released (v2)** — original 6-phase, 90-minute curriculum. Use this for current workshop deliveries |
 
 ## Key Learning Outcomes

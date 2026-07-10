@@ -2,7 +2,7 @@
 
 **Format:** Modular, instructor-led or self-paced | **Total content:** ~3.5 hours (pick modules to fit your slot)
 **Repo:** [opentelemetry-demo](https://github.com/rishikeshradhakrishnan/opentelemery-demo)
-**Updated:** May 2026 — covers Claude Code 2.1.x, Claude Opus 4.8, Claude Managed Agents & the Agent SDK
+**Updated:** July 2026 — covers Claude Code 2.1.2xx, Claude Fable 5 / Sonnet 5 / Opus 4.8, Claude Managed Agents & the Agent SDK
 
 > ⚠️ **WORK IN PROGRESS — NOT YET RELEASED**
 > This v3 content is under active development and has **not** been released for workshop delivery.
@@ -13,15 +13,15 @@
 
 ## What's New in v3
 
-This version extends the original 6-phase workshop (v2) with the platform capabilities released between **Claude Opus 4.5 (Nov 2025)** and **Claude Opus 4.8 (May 2026)**:
+This version extends the original 6-phase workshop (v2) with the platform capabilities released between **Claude Opus 4.5 (Nov 2025)** and **Claude Fable 5 / Sonnet 5 (June 2026)**:
 
 | Area | What's new |
 |------|-----------|
-| **Models** | Opus 4.8 is the default model; adaptive thinking, effort levels (`low` → `xhigh`/`max`), 1M-token context, fast mode |
-| **Claude Code core UX** | Plan mode, checkpoints & rewind, auto memory, permission modes (incl. Auto mode), `/usage`, `/context`, `/compact`, output styles, status line |
-| **Built-in skills** | `/code-review`, `/security-review`, `/verify`, `/run`, `/simplify`, `/debug` |
-| **Hooks** | Event-driven automation (`PreToolUse`, `PostToolUse`, `SessionStart`, …) |
-| **Orchestration** | Agent teams, dynamic workflows, agent view (`claude agents`), background tasks, `/goal`, `/loop` |
+| **Models** | Claude Fable 5 (new flagship, `/model fable`), Sonnet 5 (native 1M context), Opus 4.8; adaptive thinking, effort levels (`low` → `max`, plus `ultracode`), fast mode |
+| **Claude Code core UX** | Plan mode, checkpoints & rewind, auto memory, permission modes (incl. Auto mode on all plans), `/usage`, `/context`, `/compact`, output styles, status line |
+| **Built-in skills** | `/code-review`, `/security-review`, `/verify`, `/run`, `/simplify`, `/debug`, `/deep-research` |
+| **Hooks** | Event-driven automation (`PreToolUse`, `PostToolUse`, `SessionStart`, … — ~30 events) |
+| **Orchestration** | Dynamic workflows (`ultracode`), agent teams, agent view (`claude agents`), background agents, `/goal`, `/loop` |
 | **Cloud** | Claude Code on the web, routines, remote control, PR auto-fix |
 | **Subagents & skills format** | Richer frontmatter: `effort`, `permissionMode`, `context: fork`, named arguments, dynamic context injection |
 | **Plugins** | `claude plugin init/validate`, `.zip` & URL loading, `/reload-plugins`, community marketplace |
@@ -47,7 +47,7 @@ Modules are self-contained. Times are approximate; each module lists its prerequ
 | [7. Skills, Packaging & Marketplace](#module-7-skills-packaging--marketplace) | 25 min | Skills, plugins, marketplaces | 1, 4 |
 | [8. Reusability Demo](#module-8-reusability-demo) | 10 min | Install your plugin on a fresh repo | 7 |
 | [9. Claude Managed Agents & Agent SDK](#module-9-claude-managed-agents--the-agent-sdk) | 30 min | Hosted agents via API, `ant` CLI, Agent SDK | 0 |
-| [Appendix A: Claude Models — Opus 4.5 → 4.8](#appendix-a-claude-models--opus-45--48) | ref | Model timeline & API capabilities | — |
+| [Appendix A: Claude Models — Opus 4.5 → Fable 5](#appendix-a-claude-models--opus-45--48) | ref | Model timeline & API capabilities | — |
 | [Appendix B: Command & Configuration Quick Reference](#appendix-b-command--configuration-quick-reference) | ref | Slash commands, CLI flags, env vars | — |
 | [Appendix C: Changelog from v2](#appendix-c-changelog-from-v2) | ref | What changed in this document | — |
 
@@ -101,20 +101,22 @@ Inside Claude Code, check what model and effort level you are running:
 ```
 
 **Expected:**
-- **Max/Team/API accounts:** Claude Opus 4.8 (`claude-opus-4-8`) as the default model
-- **Pro accounts:** Claude Sonnet 4.6 (`claude-sonnet-4-6`)
+- **Max / Team Premium / Enterprise / API accounts:** Claude Opus 4.8 (`claude-opus-4-8`) as the default model
+- **Pro / Team Standard accounts:** Claude Sonnet 5 (`claude-sonnet-5`, native 1M context)
+- **Claude Fable 5** (`claude-fable-5`) — the most capable model — is available but not the default; switch with `/model fable`
 - Effort defaults to `high` (adaptive thinking decides how much reasoning each turn needs)
 
 **Useful model aliases:**
 
 | Alias | Meaning |
 |-------|---------|
-| `default` | Account default (Opus 4.8 on Max/Team/API) |
+| `default` | Account default (Opus 4.8 or Sonnet 5, depending on plan) |
+| `fable` / `best` | Claude Fable 5 — most capable model |
 | `opus` | Latest Opus (4.8) |
-| `sonnet` | Latest Sonnet (4.6) |
-| `haiku` | Fast & efficient |
+| `sonnet` | Latest Sonnet (5 — native 1M context) |
+| `haiku` | Fast & efficient (4.5) |
 | `opusplan` | Opus for plan mode, Sonnet for execution |
-| `sonnet[1m]` / `opus[1m]` | 1M-token context variants |
+| `opus[1m]` | 1M-token context variant of Opus |
 
 ### Instructor Pre-Check
 
@@ -174,9 +176,11 @@ list of caller -> callee pairs with file references.
 ```
 
 **Expected Behavior:**
-- A `Task(Explore: ...)` indicator appears
+- An `Agent(Explore: ...)` indicator appears (the tool was renamed from `Task` to `Agent`)
 - Exploration happens in an isolated context (your main conversation stays small)
 - Check `/context` before and after to show the difference
+
+> **Also new:** subagents now run in the **background by default** — you can keep talking to Claude while they work — and subagents can spawn their own subagents (up to 5 levels deep).
 
 ---
 
@@ -227,6 +231,8 @@ Output a concise markdown summary with:
 | `color` | Display color in the UI | `cyan` |
 | `skills` | Pre-load specific skills | `[code-reviewer]` |
 | `memory` | Persist agent memory | `user`, `project`, `local` |
+| `disallowedTools` | Deny specific tools | `Bash` |
+| `mcpServers` | MCP servers available to this agent | inline or by reference |
 
 > Only `name` and `description` are required. Start simple; add fields as you need them.
 
@@ -234,11 +240,7 @@ The agent is active as soon as the file is saved — no installation step needed
 
 > **Looking ahead:** in Module 7 you'll package this agent (and everything else you build today) into a distributable plugin — in one step, at the end. For now, just build and use it.
 
-You can also create and manage subagents interactively with:
-
-```
-/agents
-```
+> **Changed:** the `/agents` interactive creation wizard was **removed** (v2.1.198). To create a subagent, either write the file yourself (as above) or just ask: *"Create a subagent that reviews SQL migrations"* — Claude writes the file for you. Claude Code watches `.claude/agents/`, so edits take effect immediately, no restart.
 
 ---
 
@@ -266,7 +268,7 @@ Then combine all findings into a comprehensive ARCHITECTURE.md
 ```
 
 **Expected Behavior:**
-- 4 parallel `Task(...)` indicators appear
+- 4 parallel `Agent(...)` indicators appear
 - Each completes independently in its own context window
 - Results synthesized into single document
 
@@ -306,7 +308,7 @@ Synthesize findings into a summary.
 ```
 
 **Success Criteria:**
-- Participant sees parallel `Task(...)` execution
+- Participant sees parallel `Agent(...)` execution
 - Receives combined summary
 - Has `service-documenter.md` in `.claude/agents/`
 
@@ -339,8 +341,9 @@ Research the codebase and propose an implementation plan.
 **Expected Behavior:**
 - Claude reads code and asks clarifying questions but does NOT edit files
 - Presents a structured plan for approval
-- On approval, you choose how to proceed (auto-accept edits, manual review, etc.)
+- On approval, you choose how to proceed (auto-accept edits, manual review, or **"Approve and start in auto mode"**)
 - Press `Ctrl+G` to open and edit the plan in your editor before approving
+- One-off variant: prefix a single prompt with `/plan` without switching modes
 
 **Related:** the `opusplan` model alias uses Opus for planning and Sonnet for execution — a good cost/quality tradeoff:
 
@@ -363,8 +366,9 @@ Modern Claude models (Opus 4.6+) use **adaptive thinking** — the model decides
 | `low` | Quick lookups, simple edits |
 | `medium` | Routine coding tasks |
 | `high` | Default — most work |
-| `xhigh` | Complex agentic coding, hard debugging (Opus 4.7+) |
+| `xhigh` | Complex agentic coding, hard debugging (Opus 4.7+, Fable 5, Sonnet 5) |
 | `max` | Maximum exploration |
+| `ultracode` | **New** — a Claude Code setting (not a model level): `xhigh` reasoning **plus** automatic multi-agent workflow orchestration for every substantive task (see Module 6C) |
 
 **Demo — same prompt at two effort levels:**
 
@@ -395,7 +399,7 @@ Trace the full call path and verify your answer against the code.
 
 Claude Code automatically snapshots your session so you can undo agent work safely.
 
-**Open the rewind menu:** press `Esc` `Esc`
+**Open the rewind menu:** press `Esc` `Esc` (or run `/rewind`)
 
 **Demo flow:**
 1. Ask Claude to make a change you don't actually want:
@@ -405,7 +409,7 @@ Claude Code automatically snapshots your session so you can undo agent work safe
 2. Press `Esc` `Esc` and select the checkpoint from before the change
 3. Both the conversation and the file changes are rewound
 
-**Also in the rewind menu:** "Summarize up to here" compresses earlier context — useful in long sessions instead of a full `/compact`.
+**Also in the rewind menu:** "Summarize up to here" compresses earlier context — useful in long sessions instead of a full `/compact`. Rewind can even restore a conversation from before a `/clear`.
 
 ---
 
@@ -417,7 +421,7 @@ Claude Code automatically snapshots your session so you can undo agent work safe
 | Local memory | `CLAUDE.local.md` | Personal notes, not checked into git |
 | Path-specific rules | `.claude/rules/*.md` | Rules that apply only to matching paths |
 | User memory | `~/.claude/CLAUDE.md` | Your preferences across all projects |
-| Auto memory | `~/.claude/auto-memory/` | Claude's own notes, captured automatically across sessions |
+| Auto memory | `~/.claude/projects/<project>/memory/` | Claude's own notes per repo (a `MEMORY.md` index + topic files), captured automatically; **on by default** — toggle via `/memory` |
 
 **Generate a starting CLAUDE.md for the demo repo:**
 
@@ -448,15 +452,15 @@ Cycle with `Shift+Tab` or set at startup with `--permission-mode <mode>`.
 
 | Mode | Behavior | Use case |
 |------|----------|----------|
-| `default` | Reads are free; writes/commands prompt | Sensitive codebases |
+| `default` (shown as **"Manual"** in the UI) | Reads are free; writes/commands prompt | Sensitive codebases |
 | `acceptEdits` | Auto-approves file edits & common file commands | Normal development |
 | `plan` | Read-only research; proposes a plan | Design before build |
-| `auto` | Background safety classifier reviews actions, blocks risky ones | Hands-off sessions (Opus/Sonnet 4.6+, Anthropic API) |
+| `auto` | Background safety classifier reviews actions, blocks risky ones | Hands-off sessions — now on **all paid plans** |
 | `dontAsk` | Auto-denies anything not pre-approved | CI / scripts |
 | `bypassPermissions` | No prompts at all | **Isolated containers/VMs only** |
 
 **Notes for instructors:**
-- **Auto mode** is the newest addition — a safety classifier reviews each action in the background and only interrupts when something looks risky. Conversational boundaries work too: saying "don't push to remote" blocks matching actions.
+- **Auto mode** is the newest addition — a safety classifier reviews each action in the background and only interrupts when something looks risky. Conversational boundaries work too: saying "don't push to remote" blocks matching actions. Works with Sonnet 4.6/5 and Opus 4.7/4.8; on Bedrock/Vertex/Foundry set `CLAUDE_CODE_ENABLE_AUTO_MODE=1`.
 - Protected paths (`.git`, `.mcp.json`, settings files, etc.) always prompt regardless of mode.
 - Set a project default in `.claude/settings.json`:
 
@@ -486,8 +490,11 @@ Cycle with `Shift+Tab` or set at startup with `--permission-mode <mode>`.
 
 ### 2G: Output Styles & Status Line (Optional)
 
+Output styles change how Claude communicates. Built-ins: **Default**, **Proactive** (stronger autonomous execution), **Explanatory**, **Learning**.
+
+Switch via `/config` → "Output style", or set `"outputStyle"` in `.claude/settings.json`. (The old `/output-style` command was removed in v2.1.91.)
+
 ```
-/output-style          # switch response formatting style
 /statusline            # configure the terminal status line (model, effort, tokens, git branch)
 /theme                 # terminal colors
 ```
@@ -599,7 +606,9 @@ Hooks run scripts automatically around Claude's actions. Example: auto-run the l
 | `Stop` | When Claude finishes a turn |
 | `PermissionRequest` | When a permission prompt would appear |
 
-**Hook types:** `command` (shell), `prompt` (ask Claude), `agent` (spawn a subagent), `http` (POST to an endpoint).
+…plus ~20 more (`PostToolUseFailure`, `PreCompact`/`PostCompact`, `TaskCreated`/`TaskCompleted`, `FileChanged`, `SessionEnd`, …) — about 30 events in total; see the hooks reference.
+
+**Hook handler types:** `command` (shell), `prompt` (ask Claude), `agent` (spawn a subagent), `http` (POST to an endpoint), `mcp_tool` (call an MCP tool).
 
 **Inspect configured hooks:**
 
@@ -777,7 +786,7 @@ Claude Code now bundles review skills — compare them with your custom bug-hunt
 /code-review
 ```
 
-> Reviews the current diff / recent changes for correctness bugs. Run it after Claude (or you) make changes — e.g. after the Module 5 feature build.
+> Reviews the current diff / recent changes for correctness bugs. Run it after Claude (or you) make changes — e.g. after the Module 5 feature build. Takes an effort level (`/code-review high`), and supports `--fix` (apply the findings) and `--comment` (post them as inline PR comments). For a quick single-pass PR review there is also `/review <pr-number>`.
 
 **Security review:**
 
@@ -963,6 +972,9 @@ claude mcp get playwright
 # Remove a server
 claude mcp remove playwright
 
+# Authenticate an OAuth server from the CLI (NEW)
+claude mcp login github
+
 # Check server status (within Claude Code)
 /mcp
 ```
@@ -989,6 +1001,8 @@ Some MCP servers (like GitHub) require OAuth authentication:
 3. Run `/mcp` command
 4. Select the server and click "Authenticate"
 5. Complete OAuth flow in browser
+
+Or do it entirely from the terminal: `claude mcp login <server-name>` / `claude mcp logout <server-name>`.
 
 **Windows Users Note:**
 
@@ -1151,14 +1165,22 @@ Tell me when it's done.
 - The task runs as a background agent; you keep working in the same session
 - Claude notifies you when it completes
 
+**Launch a background agent straight from the terminal:**
+
+```bash
+claude --bg "Generate a dependency report for every service in src/"
+```
+
+Background agents run in an isolated git worktree (`.claude/worktrees/<id>`), and can auto-commit, push, and open a **draft PR** when they finish.
+
 **Monitor everything from one place:**
 
 ```bash
-# From a new terminal — opens the agent dashboard
+# From a new terminal — opens the agent dashboard (research preview)
 claude agents
 ```
 
-The agent view shows all running, blocked, and completed sessions; you can attach, reply, or dispatch new agents from there.
+The agent view shows all running, blocked, and completed sessions; you can attach, reply, or dispatch new agents from there. Companion commands: `claude attach`, `claude logs`, `claude stop`.
 
 ---
 
@@ -1193,19 +1215,23 @@ The lead should verify consistency across all implementations at the end.
 
 **Teaching points:**
 - Agent teams vs. parallel subagents: subagents are fire-and-forget workers; teammates can communicate, claim tasks, and be steered mid-flight
+- Every session now has one implicit team — there is no setup step; the lead simply spawns named teammates
 - You can talk to an individual teammate directly while the team runs
 - Quality gates can be enforced with hooks (e.g., a teammate can't mark a task done until tests pass)
+- Cost warning: a full team can burn ~7x the tokens of a single session
 
 ---
 
-### 6C: Workflows (Research Preview)
+### 6C: Dynamic Workflows & `ultracode`
 
-Workflows are scripted, deterministic orchestration: Claude writes a small orchestration script that fans out dozens (or hundreds) of subagents, with loops, barriers, and verification stages.
+Workflows are scripted, deterministic orchestration: Claude writes a small orchestration script that fans out dozens (or hundreds) of subagents, with loops, barriers, and verification stages. They are now available on **all paid plans** (Pro: opt-in via `/config`).
+
+**Trigger:** include the keyword **`ultracode`** in your prompt — or run `/effort ultracode` once to make Claude orchestrate a workflow automatically for every substantive task.
 
 **Demo prompt:**
 
 ```
-Use a workflow to review this codebase for error-handling gaps:
+ultracode — review this codebase for error-handling gaps:
 
 1. Fan out one reviewer agent per service in src/
 2. For every finding, spawn a verifier agent that tries to refute it
@@ -1214,9 +1240,14 @@ Use a workflow to review this codebase for error-handling gaps:
 ```
 
 **Expected Behavior:**
-- Claude proposes a workflow plan (phases, number of agents) and asks for approval
-- A progress tree shows each phase and agent
+- Claude authors a workflow script (phases, number of agents) and runs it
+- A progress tree shows each phase and agent; manage runs with `/workflows` (pause / resume / save)
 - The result is a verified, deduplicated report
+
+**Good to know:**
+- Limits: 16 concurrent agents, up to 1,000 agents per run; workflow subagents run in `acceptEdits`
+- Saved workflows live in `.claude/workflows/` and become reusable slash commands
+- `/deep-research` is a bundled workflow — a ready-made example of the pattern
 
 **When to use what:**
 
@@ -1243,19 +1274,30 @@ Use a workflow to review this codebase for error-handling gaps:
 
 > Runs a prompt on a recurring interval.
 
+```
+/schedule
+```
+
+> Creates **Routines** — recurring cloud runs (cron-style) that fire in Claude Code on the web even when your machine is off.
+
 ---
 
 ### 6E: Claude Code on the Web
 
-Claude Code also runs as a managed cloud service — useful when you want agents working while your laptop is closed.
+Claude Code also runs as a managed cloud service (research preview for Pro, Max, Team, and Enterprise) — useful when you want agents working while your laptop is closed. There is no separate compute charge; cloud sessions share your plan's usage limits.
 
-**Access:** [https://claude.ai/code](https://claude.ai/code)
+**Access:** [https://claude.ai/code](https://claude.ai/code), or straight from your terminal:
+
+```bash
+claude --cloud "Add unit tests for the currency service"   # run in the cloud
+claude --teleport                                          # pull a cloud session into your terminal
+```
 
 | Capability | Description |
 |------------|-------------|
 | GitHub repos | Connect a repo; sessions run in an isolated cloud container |
 | Parallel sessions | Kick off multiple independent sessions on the same or different repos |
-| PR auto-fix | Sessions can watch a PR, respond to review comments, and fix CI failures |
+| PR auto-fix | `/autofix-pr` — sessions watch a PR, respond to review comments, and fix CI failures |
 | Mobile | Start/steer sessions from the Claude mobile app; push notifications |
 | Teleport | Move a session between web and your local CLI |
 | Setup scripts | Pre-install dependencies for the cloud environment |
@@ -1345,6 +1387,9 @@ Include file paths and line numbers for each finding.
 | `allowed-tools` | Pre-approve tools the skill may use |
 | `context: fork` | Run the skill in an isolated subagent context |
 | `model` / `effort` | Override model or effort while the skill runs |
+| `paths` | Only activate the skill when working on matching file paths |
+
+> **Naming rule:** the **directory name** determines the `/command` name — the `name` field is now just an optional display label. In fact *all* frontmatter fields are optional; `description` is just strongly recommended so Claude knows when to use the skill.
 
 **String substitutions available in skill bodies:**
 
@@ -1377,27 +1422,27 @@ You now have three working components, all living in this project's `.claude/` d
 | `bug-hunter` | Subagent | `.claude/agents/bug-hunter.md` | Module 4 |
 | `code-reviewer` | Skill | `.claude/skills/code-reviewer/SKILL.md` | Module 7A |
 
-A **plugin** is nothing more than these same files arranged in a standard, distributable layout with a manifest. Assemble it now — this is the only plugin-structure step in the whole workshop:
+A **plugin** is nothing more than these same files arranged in a standard, distributable layout with a manifest. A plugin directory can live **anywhere** — we'll build ours as a sibling of the repo so it's clearly a standalone, distributable thing. Assemble it now — this is the only plugin-structure step in the whole workshop:
 
-**Step 1: Create the plugin layout**
+**Step 1: Create the plugin layout** (from inside `opentelemetry-demo`)
 
 ```bash
-mkdir -p .claude/plugins/codebase-toolkit/.claude-plugin
-mkdir -p .claude/plugins/codebase-toolkit/agents
-mkdir -p .claude/plugins/codebase-toolkit/skills
+mkdir -p ../codebase-toolkit/.claude-plugin
+mkdir -p ../codebase-toolkit/agents
+mkdir -p ../codebase-toolkit/skills
 ```
 
 **Step 2: Copy your components into it**
 
 ```bash
-cp .claude/agents/service-documenter.md .claude/plugins/codebase-toolkit/agents/
-cp .claude/agents/bug-hunter.md .claude/plugins/codebase-toolkit/agents/
-cp -r .claude/skills/code-reviewer .claude/plugins/codebase-toolkit/skills/
+cp .claude/agents/service-documenter.md ../codebase-toolkit/agents/
+cp .claude/agents/bug-hunter.md ../codebase-toolkit/agents/
+cp -r .claude/skills/code-reviewer ../codebase-toolkit/skills/
 ```
 
 **Step 3: Create the plugin manifest**
 
-**File:** `.claude/plugins/codebase-toolkit/.claude-plugin/plugin.json`
+**File:** `../codebase-toolkit/.claude-plugin/plugin.json`
 
 ```json
 {
@@ -1411,7 +1456,11 @@ cp -r .claude/skills/code-reviewer .claude/plugins/codebase-toolkit/skills/
 }
 ```
 
-> **Shortcut:** `claude plugin init codebase-toolkit` scaffolds Steps 1 and 3 automatically — you'd then only copy your components in (Step 2).
+> **Common mistake:** only `plugin.json` goes inside `.claude-plugin/` — the `agents/`, `skills/`, `hooks/` directories sit at the plugin **root**.
+
+> **How minimal can it get?** `name` is the only required manifest field — and the manifest itself is now optional (components are auto-discovered, the directory name becomes the plugin name, and without a `version` each git commit counts as a new version). We write a real one because a distributable plugin should describe itself.
+
+> **Shortcut:** `claude plugin init codebase-toolkit` scaffolds a plugin skeleton for you — by default into `~/.claude/skills/codebase-toolkit/`, a "skills-directory plugin" that auto-loads in every session without any install step. We assemble ours by hand in a plain directory so the layout is explicit.
 
 ---
 
@@ -1420,9 +1469,9 @@ cp -r .claude/skills/code-reviewer .claude/plugins/codebase-toolkit/skills/
 **Verify your plugin has this structure:**
 
 ```
-.claude/plugins/codebase-toolkit/
+codebase-toolkit/
 ├── .claude-plugin/
-│   └── plugin.json              # Plugin manifest (required)
+│   └── plugin.json              # Plugin manifest
 ├── agents/
 │   ├── service-documenter.md    # Documentation subagent
 │   └── bug-hunter.md            # Debugging subagent
@@ -1434,19 +1483,21 @@ cp -r .claude/skills/code-reviewer .claude/plugins/codebase-toolkit/skills/
 └── .mcp.json                    # (optional) MCP servers bundled with the plugin
 ```
 
-> **Plugins can now bundle more than agents and skills:** hooks, MCP servers, LSP servers, default settings, and even output styles all travel with the plugin.
+> **Plugins can bundle much more than agents and skills:** hooks, MCP servers, LSP servers (`.lsp.json`), output styles, default settings, and even executables (`bin/`, added to PATH while the plugin is enabled) all travel with the plugin.
 
-**Validate the plugin (NEW):**
-
-```bash
-claude plugin validate .claude/plugins/codebase-toolkit
-```
-
-**Test it locally without installing (NEW):**
+**Validate the plugin:**
 
 ```bash
-claude --plugin-dir .claude/plugins/codebase-toolkit
+claude plugin validate ../codebase-toolkit
 ```
+
+**Test it locally without installing:**
+
+```bash
+claude --plugin-dir ../codebase-toolkit
+```
+
+> `--plugin-dir` also accepts a `.zip`; `--plugin-url` loads a hosted zip.
 
 ---
 
@@ -1460,9 +1511,9 @@ A marketplace is a directory containing a manifest that lists available plugins.
 # From inside opentelemetry-demo, go up one level
 cd ..
 
-# Create the marketplace structure
+# Create the marketplace structure and copy the plugin in
 mkdir -p test-marketplace/.claude-plugin
-cp -r opentelemetry-demo/.claude/plugins/codebase-toolkit test-marketplace
+cp -r codebase-toolkit test-marketplace/
 ```
 
 **Step 2: Create marketplace manifest**
@@ -1490,10 +1541,11 @@ cp -r opentelemetry-demo/.claude/plugins/codebase-toolkit test-marketplace
 ```
 ~/workshop/
 ├── opentelemetry-demo/              # Cloned demo repo (work happens here)
+├── codebase-toolkit/                # Plugin assembled in 7B
 └── test-marketplace/                # This becomes your GitHub marketplace
     ├── .claude-plugin/
     │   └── marketplace.json         # source: "./codebase-toolkit"
-    └── codebase-toolkit/            # Plugin lives inside marketplace
+    └── codebase-toolkit/            # Copy of the plugin
         ├── .claude-plugin/
         │   └── plugin.json
         ├── agents/
@@ -1587,7 +1639,7 @@ mkdir -p plugins
 **Step 3: Copy your plugin**
 
 ```bash
-cp -r ~/workshop/opentelemetry-demo/.claude/plugins/codebase-toolkit plugins/
+cp -r ~/workshop/codebase-toolkit plugins/
 ```
 
 **Step 4: Create the marketplace manifest**
@@ -1642,10 +1694,12 @@ claude
 
 ### 7G: Browse Existing Marketplaces
 
-**Add Anthropic's official demo marketplace:**
+Anthropic's **official marketplace** (`claude-plugins-official`) registers automatically the first time you start Claude Code — the `security-guidance` plugin from Module 4D comes from there.
+
+**Add the community marketplace:**
 
 ```
-/plugin marketplace add anthropics/claude-code
+/plugin marketplace add anthropics/claude-plugins-community
 ```
 
 **Browse available plugins:**
@@ -1666,12 +1720,12 @@ Select "Browse Plugins" to see available options.
 
 | Marketplace | Source | Description |
 |-------------|--------|-------------|
-| anthropics/claude-code | GitHub | Official Anthropic demo plugins |
-| anthropics/claude-plugins-community | GitHub | Community-contributed plugins |
+| claude-plugins-official | Auto-registered | Official Anthropic plugins (e.g. `security-guidance`) |
+| anthropics/claude-plugins-community | GitHub | Community-contributed plugins (submission + review pipeline) |
 | rishikeshradhakrishnan/marketplace | GitHub | Workshop plugins |
 | test-marketplace | Local | Local testing |
 
-> **NEW:** You can also submit plugins to the official community marketplace for review at [https://claude.ai/settings/plugins/submit](https://claude.ai/settings/plugins/submit). Run `claude plugin validate` first.
+> You can submit your plugin to the community marketplace for review — run `claude plugin validate` first, then follow the submission process in the `anthropics/claude-plugins-community` repo.
 
 ---
 
@@ -1777,6 +1831,8 @@ Everything so far ran Claude Code *interactively*. This module covers running Cl
 
 **Anthropic's recommended path:** prototype with the **Agent SDK** locally → move to **Managed Agents** for production.
 
+> Don't confuse **Claude Code on the web** (Module 6E — subscription product, no per-hour compute charge) with **Managed Agents** (API product: token costs + $0.08/session-hour). Both use "environments" and "sessions" as concepts, but they are different products.
+
 ---
 
 ### 9B: The Agent SDK in 5 Minutes
@@ -1856,6 +1912,8 @@ Claude Managed Agents (public beta since April 2026) is the hosted version: Anth
 - Persistent filesystem per session
 - Server-sent event streaming
 - Memory (beta), multiagent orchestration (beta), webhooks
+
+**Added since the April launch:** scheduled deployments (cron-triggered sessions), multi-agent sessions (threaded events), outcomes (`user.define_outcome`), a memory store (beta), and **self-hosted sandboxes** (run the sandbox on your own infra via `ant beta:worker`).
 
 **Pricing model (beta):**
 - Standard token rates (e.g. Opus 4.8: $5/M input, $25/M output)
@@ -2008,9 +2066,9 @@ Then start a session that:
 ---
 
 <a id="appendix-a-claude-models--opus-45--48"></a>
-## Appendix A: Claude Models — Opus 4.5 → 4.8
+## Appendix A: Claude Models — Opus 4.5 → Fable 5
 
-Reference for instructors. All dates and capabilities verified against Anthropic release notes as of May 2026.
+Reference for instructors. All dates and capabilities verified against Anthropic release notes as of July 2026.
 
 ### Release Timeline
 
@@ -2022,8 +2080,10 @@ Reference for instructors. All dates and capabilities verified against Anthropic
 | Feb 2026 | Sonnet 4.6 | `claude-sonnet-4-6` | 1M | 128K | $3 / $15 | Opus-4.5-level coding at Sonnet price |
 | Apr 2026 | **Opus 4.7** | `claude-opus-4-7` | 1M | 128K | $5 / $25 | `xhigh` effort; 3x vision resolution |
 | May 2026 | **Opus 4.8** | `claude-opus-4-8` | 1M | 128K | $5 / $25 | Refined adaptive thinking; 4x better at catching code flaws; cheaper fast mode |
+| Jun 2026 | **Claude Fable 5** | `claude-fable-5` | 1M | 128K | $10 / $50 | New flagship family above Opus; adaptive-thinking-only; built-in safety classifiers |
+| Jun 2026 | **Sonnet 5** | `claude-sonnet-5` | 1M | 128K | $3 / $15 (intro $2/$10 until Aug 31) | Native 1M context; new default for Pro plans |
 
-> No Sonnet 4.7/4.8 or Haiku 4.6+ exist as of May 2026. Long-context premium pricing applies above 200K input tokens.
+> There is no Sonnet 4.7/4.8 or Haiku 4.6+ — Sonnet jumped from 4.6 straight to 5. The full 1M window is standard-priced (no long-context surcharge) on Opus 4.6+, Sonnet 4.6/5, and Fable 5.
 
 ### What Each Release Added for Coding/Agent Workflows
 
@@ -2054,11 +2114,25 @@ Reference for instructors. All dates and capabilities verified against Anthropic
 - **4x less likely than Opus 4.7 to miss code flaws** (better code review/verification)
 - Fast mode price cut to $10/$50 (research preview)
 - Mid-conversation system messages; refusal categories in `stop_details`
-- Default model in Claude Code for Max/Team/API accounts
+- Default model in Claude Code for Max/Team Premium/Enterprise/API accounts
+
+**Claude Fable 5 (Jun 9, 2026)**
+- New flagship model family positioned above Opus ($10/$50); 1M context, 128K output
+- Adaptive thinking is the *only* thinking mode; raw chain-of-thought is never returned (summarized or omitted)
+- Ships with safety classifiers that can decline requests (`stop_reason: "refusal"`), with a server-side `fallbacks` retry parameter (beta) and fallback billing credit
+- Released alongside **Claude Mythos 5** — invitation-only, for defensive-cybersecurity work (Project Glasswing)
+- Briefly unavailable June 12–30, 2026 under US export controls; access restored July 1
+- In Claude Code: `/model fable` (alias `best`) — available on paid plans but not the default
+- Uses the newer tokenizer (shared with Opus 4.7+/Sonnet 5): ~30% more tokens for the same text — budget accordingly
+
+**Sonnet 5 (Jun 30, 2026)**
+- Native 1M-token context at standard pricing; introductory rate $2/$10 through Aug 31, 2026 (then $3/$15)
+- First Sonnet with `xhigh` effort support
+- Default model for Free/Pro on claude.ai, and for Pro/Team Standard seats in Claude Code
 
 ### Key API Features (and when they became usable)
 
-| Feature | Status (May 2026) | What it does |
+| Feature | Status (Jul 2026) | What it does |
 |---------|-------------------|--------------|
 | Effort parameter | GA | Tune reasoning depth: `low` → `xhigh`/`max` |
 | Adaptive thinking | GA (Opus 4.6+) | Model self-regulates thinking; no manual budgets |
@@ -2071,7 +2145,7 @@ Reference for instructors. All dates and capabilities verified against Anthropic
 | Code execution tool | GA | Sandboxed Python execution |
 | Web search / web fetch tools | GA | Live web access from the API |
 | Structured outputs | GA | Schema-enforced JSON responses |
-| Fast mode | Research preview | ~2.5x faster output, premium pricing |
+| Fast mode | Research preview | ~2.5x faster output; Opus 4.8 at $10/$50 (Opus 4.6/4.7 fast modes retired) |
 | Automatic prompt caching | GA | Caching without manual breakpoints |
 | Cache diagnostics | Beta | `cache_miss_reason` for debugging cache hits |
 | Claude Managed Agents | Public beta | Hosted agent harness (Module 9) |
@@ -2083,7 +2157,8 @@ Reference for instructors. All dates and capabilities verified against Anthropic
 | Claude Opus 3 | Retired (Jan 2026) | Opus 4.5+ |
 | Claude Sonnet 3.5 / 3.7 | Retired / deprecated | Sonnet 4.6 |
 | Claude Haiku 3 / 3.5 | Deprecated/retired | Haiku 4.5 |
-| Claude Opus 4 / Sonnet 4 | Deprecated (June 2026 retirement) | Opus 4.7+ / Sonnet 4.6 |
+| Claude Opus 4 / Sonnet 4 | Retired (June 2026) | Opus 4.7+ / Sonnet 5 |
+| Claude Opus 4.1 | Deprecated (retires Aug 5, 2026) | Opus 4.5+ |
 
 ---
 
@@ -2101,23 +2176,26 @@ Reference for instructors. All dates and capabilities verified against Anthropic
 | `/usage` | Token breakdown by component | 1E, 2F |
 | `/cost` | Session cost estimate | 2F |
 | `/init` | Generate CLAUDE.md for the project | 2D |
-| `/memory` | View/edit memory files | 2D |
-| `/agents` | Create/manage subagents interactively | 1D |
+| `/memory` | View/edit memory files (incl. auto memory) | 2D |
+| `/rewind` | Open the checkpoint/rewind menu | 2C |
 | `/hooks` | List configured hooks | 3D |
 | `/mcp` | MCP server status & authentication | 5B |
 | `/plugin` | Install/manage plugins & marketplaces | 7E |
 | `/reload-plugins` | Reload plugins without restart | 7E |
-| `/code-review` | Built-in correctness review | 4D |
+| `/code-review` | Built-in correctness review (`--fix`, `--comment`) | 4D |
 | `/security-review` | Built-in security review | 4D |
 | `/simplify` | Built-in cleanup review | 4D |
+| `/review` | Quick single-pass PR review | 4D |
 | `/verify` | Verify a change actually works | 3C |
 | `/run` | Launch the project's app | 3C |
 | `/goal` | Work until a condition is met | 6D |
 | `/loop` | Run a prompt on an interval | 6D |
-| `/output-style` | Switch response formatting | 2G |
+| `/schedule` | Recurring cloud Routines | 6D |
+| `/workflows` | Manage dynamic workflow runs | 6C |
+| `/fast` | Toggle fast mode (Opus 4.8) | — |
 | `/statusline` | Configure status line | 2G |
 | `/status` | Account/model/settings overview | 2F |
-| `/config` | Global settings | — |
+| `/config` | Global settings (incl. output style) | 2G |
 | `/help` | List all commands | — |
 
 ### Keyboard Shortcuts
@@ -2125,9 +2203,10 @@ Reference for instructors. All dates and capabilities verified against Anthropic
 | Shortcut | Action |
 |----------|--------|
 | `Shift+Tab` | Cycle permission modes (default → acceptEdits → plan → …) |
-| `Esc` `Esc` | Open rewind/checkpoint menu |
+| `Esc` `Esc` | Open rewind/checkpoint menu (same as `/rewind`) |
 | `Ctrl+O` | Expand/collapse Claude's thinking |
 | `Ctrl+G` | Edit the current plan/prompt in your editor |
+| `Ctrl+R` | Search conversation history across projects |
 
 ### CLI Flags & Commands
 
@@ -2139,10 +2218,15 @@ Reference for instructors. All dates and capabilities verified against Anthropic
 | `claude --effort xhigh` | Start with a specific effort level |
 | `claude --permission-mode plan` | Start in a specific permission mode |
 | `claude --agent <name>` | Run an entire session as a specific subagent |
+| `claude --bg "<task>"` | Launch a background agent |
+| `claude --cloud "<task>"` | Run the task on Claude Code on the web |
+| `claude --teleport` | Pull a cloud session into your terminal |
 | `claude agents` | Open the agent view dashboard |
-| `claude doctor` | Health check |
+| `claude attach/logs/stop` | Manage background agents |
+| `claude doctor` | Health check / full setup checkup |
 | `claude update` | Update Claude Code |
 | `claude mcp add/list/get/remove` | Manage MCP servers |
+| `claude mcp login/logout <name>` | MCP OAuth from the CLI |
 | `claude plugin init/validate/install/list` | Manage plugins |
 | `claude --plugin-dir <path>` | Load a plugin for testing (dir or .zip) |
 
@@ -2153,6 +2237,9 @@ Reference for instructors. All dates and capabilities verified against Anthropic
 | `ANTHROPIC_MODEL` | Default model |
 | `CLAUDE_CODE_EFFORT_LEVEL` | Default effort level |
 | `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` | Enable agent teams |
+| `CLAUDE_CODE_DISABLE_AUTO_MEMORY=1` | Disable auto memory |
+| `CLAUDE_CODE_ENABLE_AUTO_MODE=1` | Enable Auto mode on Bedrock/Vertex/Foundry |
+| `CLAUDE_CODE_DISABLE_WORKFLOWS=1` | Disable dynamic workflows |
 | `ENABLE_TOOL_SEARCH` | Control MCP tool deferred loading |
 | `MAX_MCP_OUTPUT_TOKENS` | Cap MCP tool output size |
 | `MAX_THINKING_TOKENS=0` | Disable extended thinking |
@@ -2175,8 +2262,9 @@ Reference for instructors. All dates and capabilities verified against Anthropic
 | Module 7 | Was Phase 5. Plugin assembly consolidated into a single step (7B) at the end — components are built in their native `.claude/` locations first, then packaged once. Skill frontmatter updated (arguments, `context: fork`, substitutions); `claude plugin init/validate`, `--plugin-dir`, `/reload-plugins`, namespaced skill invocation, community marketplace submission |
 | Module 8 | Was Phase 6. Updated install flow (`/reload-plugins` instead of restart) |
 | Module 9 | **New module** — Claude Managed Agents (concepts, quickstart, pricing), Agent SDK, `ant` CLI, headless mode |
-| Appendix A | **New** — model timeline Opus 4.5 → 4.8 with API capabilities |
+| Appendix A | **New** — model timeline Opus 4.5 → Fable 5 with API capabilities |
 | Appendix B | **New** — consolidated command/shortcut/flag/env-var reference |
+| **July 2026 revision** | Refreshed against Claude Code 2.1.2xx and July 2026 models: added Claude Fable 5 & Sonnet 5; workflows now triggered with `ultracode` (all paid plans); subagents background-by-default & nestable; `/agents` wizard and `/output-style` removed; auto-memory location corrected; Auto mode on all plans; plugin assembled in a plain directory (not `.claude/plugins/`); official & community marketplaces updated |
 
 ---
 
@@ -2194,12 +2282,13 @@ if (Math.random() < 0.3) throw new Error("Connection timeout");
 
 | Feature | Requirement |
 |---------|-------------|
-| Opus 4.8 as default | Max/Team/Enterprise/API account (Pro defaults to Sonnet 4.6) |
-| Auto permission mode | Opus 4.6+/Sonnet 4.6+, Anthropic API (not Bedrock/Vertex/Foundry) |
-| Agent teams | `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` env var |
-| Workflows | Newer Claude Code versions; research preview — behavior may change |
-| Claude Code on the web | Eligible subscription plan; GitHub repo access |
+| Opus 4.8 as default | Max/Team Premium/Enterprise/API account (Pro & Team Standard default to Sonnet 5) |
+| Claude Fable 5 | Available via `/model fable` on paid plans; not the default |
+| Auto permission mode | All paid plans; Sonnet 4.6/5, Opus 4.7/4.8 (Bedrock/Vertex/Foundry need `CLAUDE_CODE_ENABLE_AUTO_MODE=1`) |
+| Agent teams | `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` env var (still experimental) |
+| Dynamic workflows / `ultracode` | All paid plans (Pro: opt-in via `/config`); Claude Code 2.1.154+ (`/effort ultracode` needs 2.1.203+) |
+| Claude Code on the web | Research preview; Pro/Max/Team/Enterprise; GitHub repo access |
 | Managed Agents (Module 9) | Console account + API key; public beta; usage-based billing |
-| Fast mode | Research preview; waitlist/account-manager access |
+| Fast mode | Research preview; Opus 4.8 only ($10/$50) |
 
-> **Versions change quickly.** This document was verified against Claude Code 2.1.x and the Claude API as of May 2026. Before delivering the workshop, re-check anything marked beta/experimental/research-preview against [code.claude.com/docs](https://code.claude.com/docs) and [platform.claude.com/docs](https://platform.claude.com/docs).
+> **Versions change quickly.** This document was verified against Claude Code 2.1.206 and the Claude API as of July 2026. Before delivering the workshop, re-check anything marked beta/experimental/research-preview against [code.claude.com/docs](https://code.claude.com/docs) and [platform.claude.com/docs](https://platform.claude.com/docs).
