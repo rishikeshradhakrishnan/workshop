@@ -1,0 +1,9 @@
+patterns:
+  - rule_name: subprocess_shell
+    regex: "shell\\s*=\\s*True"
+    paths: ["**/app/**"]
+    reminder: "astroshop-reviews policy: never pass shell=True or build shell strings from request data. Use an argument list, or better, do not expose command execution over HTTP at all."
+  - rule_name: yaml_unsafe_loader
+    substrings: ["yaml.load(", "Loader=yaml.Loader", "yaml.UnsafeLoader"]
+    paths: ["**/app/**"]
+    reminder: "Use yaml.safe_load for anything derived from a request body."

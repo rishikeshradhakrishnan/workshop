@@ -1,0 +1,14 @@
+{
+  "name": "workshop-m6-managed-agents-ts",
+  "version": "4.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Module 6 TypeScript track: cd starter && npx tsx deploy_toolkit_agent.ts stepN",
+  "scripts": {
+    "solution": "tsx solution/deploy_toolkit_agent.ts",
+    "starter": "tsx starter/deploy_toolkit_agent.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": { "@anthropic-ai/sdk": "^0.118.0" },
+  "devDependencies": { "tsx": "^4.19.0", "typescript": "^5.6.0", "@types/node": "^22.0.0" }
+}

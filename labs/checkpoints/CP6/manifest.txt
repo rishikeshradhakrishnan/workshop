@@ -1,0 +1,2 @@
+# CP6 — Managed Agents 'deploy_toolkit_agent' solution over the starter for your track.
+copy labs/m6-managed-agents/{LANG}/solution   WS:labs/m6-managed-agents/{LANG}/starter

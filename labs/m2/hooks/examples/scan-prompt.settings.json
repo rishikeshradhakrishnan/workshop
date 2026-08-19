@@ -1,0 +1,2 @@
+{ "hooks": { "UserPromptSubmit": [ { "hooks": [ { "type": "command",
+  "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/scan-prompt.sh", "timeout": 5 } ] } ] } }

@@ -1,0 +1,3 @@
+CLAUDE.md (reference /init result + the three workshop conventions) and .claude/rules/proto.md written into $OTEL (end state of the M1 lab).
+Produced by: M1 (modules/01-claude-code-essentials.md). Content: files/OTEL/CLAUDE.md, files/OTEL/.claude/rules/proto.md (same as labs/m1/rules/proto.md).
+An existing CLAUDE.md of your own is kept unless you pass --force (yours is as good as ours if it has build/test commands + conventions).

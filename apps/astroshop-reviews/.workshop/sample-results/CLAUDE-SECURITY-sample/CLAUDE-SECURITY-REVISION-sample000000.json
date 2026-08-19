@@ -1,0 +1,28 @@
+{
+  "tool": "claude-security",
+  "kind": "sample",
+  "revision": "sample000000",
+  "dirty": false,
+  "scope": "repository",
+  "effort": "medium",
+  "started_at": "2026-08-01T09:00:00Z",
+  "finished_at": "2026-08-01T09:11:42Z",
+  "counts": {
+    "HIGH": 5,
+    "MEDIUM": 2,
+    "LOW": 1,
+    "total": 8,
+    "rejected_candidates": 5
+  },
+  "verification": {
+    "status": "verified",
+    "panel": "3 lenses, keep if >=2 true",
+    "unanimous": [
+      "F1",
+      "F2",
+      "F4",
+      "F8"
+    ]
+  },
+  "note": "SAMPLE stamp shipped in .workshop/sample-results \u2014 the revision is a placeholder and will not match your HEAD; a real stamp is named CLAUDE-SECURITY-REVISION-<sha12>[-dirty].json"
+}

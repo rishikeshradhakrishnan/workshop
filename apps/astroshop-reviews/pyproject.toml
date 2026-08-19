@@ -1,0 +1,21 @@
+[project]
+name = "astroshop-reviews"
+version = "0.4.0"
+description = "Astronomy Shop product-review microservice — DELIBERATELY VULNERABLE workshop code. Never deploy."
+requires-python = ">=3.10"
+dependencies = [
+  "flask>=3.0",
+  "pyyaml>=6.0",
+  "requests>=2.31",
+]
+
+[dependency-groups]
+dev = ["pytest>=8.0"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-q"
+
+[tool.uv]
+package = false

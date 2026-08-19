@@ -1,0 +1,9 @@
+[project]
+name = "workshop-m5-python-env"
+version = "4.0.0"
+description = "Shared Python environment for the workshop's SDK labs (M5 demo, preflight import check). The bughunter starter/solution are their own uv projects."
+requires-python = ">=3.10"
+dependencies = ["claude-agent-sdk", "anthropic", "jsonschema>=4.20"]
+
+[tool.uv]
+package = false

@@ -1,0 +1,39 @@
+diff --git a/app/exports.py b/app/exports.py
+index 44515e9..061c4a8 100644
+--- a/app/exports.py
++++ b/app/exports.py
+@@ -1,6 +1,8 @@
++import csv
+ import os
+-from flask import Blueprint, abort, current_app, send_file
+-from app.auth.decorators import require_login
++from flask import Blueprint, abort, current_app, jsonify, request, send_file
++from app.auth.decorators import require_admin, require_login
++from app.db import get_db
+ 
+ bp = Blueprint("exports", __name__)
+ 
+@@ -11,3 +13,23 @@ def download_export(name: str):
+     if not os.path.isfile(path):
+         abort(404)
+     return send_file(os.path.abspath(path))
++
++
++@bp.post("/exports")
++@require_admin
++def create_export():
++    """Write all public reviews for one product to <EXPORT_DIR>/<product_id>.csv and return its download path."""
++    product = (request.get_json(force=True) or {}).get("product_id", "")
++    if not product:
++        abort(400)
++    rows = get_db().execute(
++        "SELECT id, product_id, rating, body FROM reviews WHERE private = 0 AND product_id = ?", (product,)
++    ).fetchall()
++    os.makedirs(current_app.config["EXPORT_DIR"], exist_ok=True)
++    name = f"{product}.csv"
++    with open(os.path.join(current_app.config["EXPORT_DIR"], name), "w", newline="") as fh:
++        writer = csv.writer(fh)
++        writer.writerow(["id", "product_id", "rating", "body"])
++        for r in rows:
++            writer.writerow([r["id"], r["product_id"], r["rating"], r["body"]])
++    return jsonify({"export": name, "rows": len(rows), "download": f"/exports/{name}"}), 201

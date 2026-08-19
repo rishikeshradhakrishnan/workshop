@@ -1,2 +1,20 @@
-.claude/*
-.claude
+# local Claude Code state at the repo root only (nested .claude/ dirs under labs/ are workshop content and must be tracked)
+/.claude/
+
+# workshop v4
+labs/.env
+labs/.env.instructor
+.checkpoint-backup/
+node_modules/
+.venv/
+__pycache__/
+.cma-state.json
+.bughunter-session
+*.pyc
+.pytest_cache/
+# lab run outputs that land inside this repo (M5/M6 write these in the directory you run from)
+labs/**/tickets.json
+labs/m6-managed-agents/*/starter/bug-report.md
+labs/m6-managed-agents/*/solution/bug-report.md
+# real Claude Security scan output directories (the checked-in sample lives under apps/astroshop-reviews/.workshop/sample-results/)
+CLAUDE-SECURITY-2*/

@@ -1,0 +1,31 @@
+name: Security Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write        # needed for leaving PR comments
+
+jobs:
+  security-review:
+    # Same-repo branches only: fork PRs receive no secrets and are untrusted input for an AI reviewer.
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 2
+
+      - uses: anthropics/claude-code-security-review@main     # production: pin to a commit SHA
+        with:
+          claude-api-key: ${{ secrets.ANTHROPIC_API_KEY }}     # README examples call this CLAUDE_API_KEY; any secret name works
+          claude-model: ${{ vars.CLAUDE_MODEL }}               # set explicitly; do not rely on the Action's default
+          comment-pr: true
+          upload-results: true
+          exclude-directories: tests
+          custom-security-scan-instructions: .github/security-instructions.md
+          claudecode-timeout: 20

@@ -1,0 +1,2 @@
+Managed Agents 'deploy_toolkit_agent' solution copied over labs/m6-managed-agents/{LANG}/starter — run with --force (starter always differs; yours is backed up); post.sh installs deps and, with ANTHROPIC_API_KEY set, runs `step1 step2 step3 --yes` (environment, agent v1→v2, session + streamed events, auto-allowed confirmation, custom-tool round-trip), caching IDs in .cma-state.json; without a key it prints the pairing / expected-output path.
+Produced by: M6 (modules/06-claude-managed-agents.md). Sources: manifest.txt. Use --lang python|typescript (or TRACK in labs/.env).

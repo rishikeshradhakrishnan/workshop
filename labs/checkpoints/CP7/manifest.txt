@@ -1,0 +1,9 @@
+# CP7 — M7 end state. Everything for $REV comes from the template's .workshop/ assets, whose source of truth in this repo is
+# apps/astroshop-reviews/.workshop/. $OTEL gets the hardened settings.json (M2 file + Module 7 "Close" keys) — it DIFFERS from
+# CP2's file, so checkpoint.sh keeps yours unless you pass --force (announced in the module's "If you're behind" box).
+copy apps/astroshop-reviews/.workshop/sample-results/CLAUDE-SECURITY-sample   REV:CLAUDE-SECURITY-sample
+copy apps/astroshop-reviews/.workshop/security-patterns.yaml                  REV:.claude/security-patterns.yaml
+copy apps/astroshop-reviews/.workshop/security-patterns.json                  REV:.claude/security-patterns.json
+copy apps/astroshop-reviews/.workshop/claude-security-guidance.md             REV:.claude/claude-security-guidance.md
+copy apps/astroshop-reviews/.workshop/security-review.yml                     REV:.github/workflows/security-review.yml
+copy apps/astroshop-reviews/.workshop/security-instructions.md                REV:.github/security-instructions.md

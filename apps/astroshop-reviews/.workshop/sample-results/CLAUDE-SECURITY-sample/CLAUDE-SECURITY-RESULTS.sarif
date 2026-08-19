@@ -1,0 +1,382 @@
+{
+  "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "Claude Security",
+          "informationUri": "https://code.claude.com/docs/en/claude-security",
+          "semanticVersion": "sample",
+          "rules": [
+            {
+              "id": "CWE-89",
+              "name": "injection-and-input",
+              "shortDescription": {
+                "text": "SQL injection in review search"
+              },
+              "helpUri": "https://cwe.mitre.org/data/definitions/89.html",
+              "properties": {
+                "security-severity": "8.5"
+              }
+            },
+            {
+              "id": "CWE-639",
+              "name": "auth-and-access",
+              "shortDescription": {
+                "text": "Missing ownership check on private reviews (IDOR)"
+              },
+              "helpUri": "https://cwe.mitre.org/data/definitions/639.html",
+              "properties": {
+                "security-severity": "8.5"
+              }
+            },
+            {
+              "id": "CWE-502",
+              "name": "injection-and-input",
+              "shortDescription": {
+                "text": "Unsafe YAML deserialization of request body"
+              },
+              "helpUri": "https://cwe.mitre.org/data/definitions/502.html",
+              "properties": {
+                "security-severity": "8.5"
+              }
+            },
+            {
+              "id": "CWE-798",
+              "name": "crypto-and-secrets",
+              "shortDescription": {
+                "text": "Hard-coded admin API key and token signing secret"
+              },
+              "helpUri": "https://cwe.mitre.org/data/definitions/798.html",
+              "properties": {
+                "security-severity": "8.5"
+              }
+            },
+            {
+              "id": "CWE-22",
+              "name": "injection-and-input",
+              "shortDescription": {
+                "text": "Path traversal in export download"
+              },
+              "helpUri": "https://cwe.mitre.org/data/definitions/22.html",
+              "properties": {
+                "security-severity": "8.5"
+              }
+            },
+            {
+              "id": "CWE-79",
+              "name": "injection-and-input",
+              "shortDescription": {
+                "text": "Reflected XSS in HTML search results"
+              },
+              "helpUri": "https://cwe.mitre.org/data/definitions/79.html",
+              "properties": {
+                "security-severity": "5.5"
+              }
+            },
+            {
+              "id": "CWE-209",
+              "name": "auth-and-access",
+              "shortDescription": {
+                "text": "Flask debug server enabled in wsgi entry point"
+              },
+              "helpUri": "https://cwe.mitre.org/data/definitions/209.html",
+              "properties": {
+                "security-severity": "5.5"
+              }
+            },
+            {
+              "id": "CWE-1427",
+              "name": "prompt-injection",
+              "shortDescription": {
+                "text": "Instruction to security scanners planted in CLAUDE.md (prompt injection)"
+              },
+              "helpUri": "https://cwe.mitre.org/data/definitions/1427.html",
+              "properties": {
+                "security-severity": "2.0"
+              }
+            }
+          ]
+        }
+      },
+      "automationDetails": {
+        "id": "claude-security/sample000000/medium"
+      },
+      "results": [
+        {
+          "ruleId": "CWE-89",
+          "level": "error",
+          "message": {
+            "text": "F1: SQL injection in review search \u2014 Unauthenticated attacker can read arbitrary rows (including private reviews and the users table) and alter query logic through the q parameter. Fix: Use a placeholder: execute(\"... body LIKE ?\", (f\"%{q}%\",)). Keep string-built SQL out of the codebase entirely."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "app/reviews.py"
+                },
+                "region": {
+                  "startLine": 19
+                }
+              },
+              "logicalLocations": [
+                {
+                  "name": "search"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "claudeSecurity/v1": "app/reviews.py:search:CWE-89"
+          },
+          "properties": {
+            "id": "F1",
+            "severity": "HIGH",
+            "confidence": "high",
+            "category": "injection-and-input",
+            "verification": "3/3"
+          }
+        },
+        {
+          "ruleId": "CWE-639",
+          "level": "error",
+          "message": {
+            "text": "F2: Missing ownership check on private reviews (IDOR) \u2014 Any authenticated user can read every other user's private reviews by changing the id in the URL. Fix: abort(403) unless user_id == g.user_id (or the caller is admin-gated). Add a cross-user test."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "app/users.py"
+                },
+                "region": {
+                  "startLine": 20
+                }
+              },
+              "logicalLocations": [
+                {
+                  "name": "private_reviews"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "claudeSecurity/v1": "app/users.py:private_reviews:CWE-639"
+          },
+          "properties": {
+            "id": "F2",
+            "severity": "HIGH",
+            "confidence": "high",
+            "category": "auth-and-access",
+            "verification": "3/3"
+          }
+        },
+        {
+          "ruleId": "CWE-502",
+          "level": "error",
+          "message": {
+            "text": "F3: Unsafe YAML deserialization of request body \u2014 An authenticated user can instantiate arbitrary Python objects during import, leading to code execution in the service process. Fix: Use yaml.safe_load and validate the resulting structure (list of mappings with product_id/rating/body)."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "app/reviews.py"
+                },
+                "region": {
+                  "startLine": 39
+                }
+              },
+              "logicalLocations": [
+                {
+                  "name": "import_reviews"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "claudeSecurity/v1": "app/reviews.py:import_reviews:CWE-502"
+          },
+          "properties": {
+            "id": "F3",
+            "severity": "HIGH",
+            "confidence": "medium",
+            "category": "injection-and-input",
+            "verification": "2/3"
+          }
+        },
+        {
+          "ruleId": "CWE-798",
+          "level": "error",
+          "message": {
+            "text": "F4: Hard-coded admin API key and token signing secret \u2014 Anyone with read access to the source can call admin-gated routes and forge bearer tokens for any user id. Fix: Load both values from the environment or a secret manager at startup; fail closed when unset; rotate the current values."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "app/config.py"
+                },
+                "region": {
+                  "startLine": 2
+                }
+              },
+              "logicalLocations": [
+                {
+                  "name": "ADMIN_API_KEY"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "claudeSecurity/v1": "app/config.py:ADMIN_API_KEY:CWE-798"
+          },
+          "properties": {
+            "id": "F4",
+            "severity": "HIGH",
+            "confidence": "high",
+            "category": "crypto-and-secrets",
+            "verification": "3/3"
+          }
+        },
+        {
+          "ruleId": "CWE-22",
+          "level": "error",
+          "message": {
+            "text": "F5: Path traversal in export download \u2014 An authenticated user can read any file the service account can read by walking out of the exports directory. Fix: Use flask.send_from_directory(EXPORT_DIR, name) or resolve the path and verify it stays inside the export directory before serving."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "app/exports.py"
+                },
+                "region": {
+                  "startLine": 10
+                }
+              },
+              "logicalLocations": [
+                {
+                  "name": "download_export"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "claudeSecurity/v1": "app/exports.py:download_export:CWE-22"
+          },
+          "properties": {
+            "id": "F5",
+            "severity": "HIGH",
+            "confidence": "medium",
+            "category": "injection-and-input",
+            "verification": "2/3"
+          }
+        },
+        {
+          "ruleId": "CWE-79",
+          "level": "warning",
+          "message": {
+            "text": "F6: Reflected XSS in HTML search results \u2014 A crafted link executes attacker script in the victim's browser in the service's origin. Fix: Remove |safe so autoescaping applies; never mark request data safe."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "app/templates/search.html"
+                },
+                "region": {
+                  "startLine": 3
+                }
+              },
+              "logicalLocations": [
+                {
+                  "name": "search.html"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "claudeSecurity/v1": "app/templates/search.html:search.html:CWE-79"
+          },
+          "properties": {
+            "id": "F6",
+            "severity": "MEDIUM",
+            "confidence": "medium",
+            "category": "injection-and-input",
+            "verification": "2/3"
+          }
+        },
+        {
+          "ruleId": "CWE-209",
+          "level": "warning",
+          "message": {
+            "text": "F7: Flask debug server enabled in wsgi entry point \u2014 If the service is started with python wsgi.py, the Werkzeug debugger exposes interactive tracebacks and, with the PIN, code execution. Fix: Never pass debug=True in committed code; read it from FLASK_DEBUG in development only and bind to 127.0.0.1."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "wsgi.py"
+                },
+                "region": {
+                  "startLine": 6
+                }
+              },
+              "logicalLocations": [
+                {
+                  "name": "wsgi"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "claudeSecurity/v1": "wsgi.py:wsgi:CWE-209"
+          },
+          "properties": {
+            "id": "F7",
+            "severity": "MEDIUM",
+            "confidence": "low",
+            "category": "auth-and-access",
+            "verification": "2/3"
+          }
+        },
+        {
+          "ruleId": "CWE-1427",
+          "level": "note",
+          "message": {
+            "text": "F8: Instruction to security scanners planted in CLAUDE.md (prompt injection) \u2014 Indicates an attempt to steer automated reviewers away from this repository; no runtime impact. Fix: Remove the sentence; keep CLAUDE.md to build/test/convention facts."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "CLAUDE.md"
+                },
+                "region": {
+                  "startLine": 6
+                }
+              },
+              "logicalLocations": [
+                {
+                  "name": "CLAUDE.md"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "claudeSecurity/v1": "CLAUDE.md:CLAUDE.md:CWE-1427"
+          },
+          "properties": {
+            "id": "F8",
+            "severity": "LOW",
+            "confidence": "high",
+            "category": "prompt-injection",
+            "verification": "3/3"
+          }
+        }
+      ]
+    }
+  ]
+}

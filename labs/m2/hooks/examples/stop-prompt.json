@@ -1,0 +1,13 @@
+{
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          { "type": "prompt",
+            "prompt": "You gate whether a coding agent may end its turn. Hook input follows: $ARGUMENTS. Read last_assistant_message. If it describes source-code changes but does not report running the matching tests (go test / npm test / pytest) after the last change, answer ok=false with a reason that tells the agent exactly which test command to run and to report the result. If stop_hook_active is true, or no code was changed, answer ok=true.",
+            "timeout": 30 }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,27 @@
+diff --git a/app/users.py b/app/users.py
+index d2a9c6c..532cf8f 100644
+--- a/app/users.py
++++ b/app/users.py
+@@ -1,6 +1,7 @@
+-from flask import Blueprint, abort, jsonify, request
++from flask import Blueprint, Response, abort, jsonify, request
+ from app.auth.decorators import require_login
+ from app.auth.tokens import issue_token
++from app.avatars import fetch_avatar
+ from app.db import get_db
+ 
+ bp = Blueprint("users", __name__)
+@@ -23,3 +24,13 @@ def private_reviews(user_id: int):
+         "SELECT id, product_id, rating, body FROM reviews WHERE private = 1 AND user_id = ?", (user_id,)
+     ).fetchall()
+     return jsonify([dict(r) for r in rows])
++
++
++@bp.get("/users/<int:user_id>/avatar")
++@require_login
++def avatar(user_id: int):
++    url = request.args.get("url", "")
++    if not url:
++        abort(400)
++    body, content_type = fetch_avatar(url)          # proxies any URL the caller names
++    return Response(body, content_type=content_type)

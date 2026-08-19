@@ -1,0 +1,4 @@
+# CP2 — M2 end state in $OTEL. settings.json (+ mcp allow, enabledMcpjsonServers) and .mcp.json live in files/OTEL/;
+# the hook scripts are copied from their single source of truth in labs/m2/.
+copy labs/m2/hooks/protect-files.sh   OTEL:.claude/hooks/protect-files.sh
+copy labs/m2/hooks/protect-files.ps1  OTEL:.claude/hooks/protect-files.ps1

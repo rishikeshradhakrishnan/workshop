@@ -1,0 +1,42 @@
+# labs/m5-agent-sdk/Dockerfile.hardened — Module 5 stretch (e) / take-home 4: run bughunter with its hands tied.
+#
+#   cd labs/m5-agent-sdk/python/solution        # (or starter once it works)
+#   docker build -f ../../Dockerfile.hardened -t bughunter .
+#   docker run --rm \
+#     --cap-drop ALL --security-opt no-new-privileges --read-only --tmpfs /tmp --tmpfs /home/agent \
+#     --network none --user 1000:1000 \
+#     -v "$OTEL:/workspace/opentelemetry-demo:ro" -v "$OTEL/../codebase-toolkit:/workspace/codebase-toolkit:ro" \
+#     -e ANTHROPIC_BASE_URL=http://unix-proxy.invalid   # see Ref §K.4: reach the API only through a credential-injecting proxy socket
+#     bughunter src/paymentservice
+#
+# With --network none the run fails at the first API call unless you provide the proxy pattern from Ref §K.4 —
+# that is the point of the exercise: no key in the container, no arbitrary egress, code mounted read-only.
+FROM python:3.12-slim AS base
+
+ENV PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    UV_LINK_MODE=copy \
+    UV_COMPILE_BYTECODE=1 \
+    HOME=/home/agent \
+    OTEL=/workspace/opentelemetry-demo \
+    TOOLKIT_PLUGIN=/workspace/codebase-toolkit \
+    CLAUDE_CODE_DISABLE_AUTO_MEMORY=1 \
+    CLAUDE_CODE_SUBPROCESS_ENV_SCRUB=1
+
+# uv for a reproducible install from pyproject.toml/uv.lock; git because the agent likes `git log`
+RUN pip install --no-cache-dir uv==0.8.* \
+ && apt-get update && apt-get install -y --no-install-recommends git ca-certificates \
+ && rm -rf /var/lib/apt/lists/* \
+ && useradd --uid 1000 --create-home --home-dir /home/agent agent
+
+WORKDIR /app
+COPY pyproject.toml uv.lock* ./
+COPY bughunter ./bughunter
+RUN uv sync --no-dev --frozen 2>/dev/null || uv sync --no-dev \
+ && chown -R agent:agent /app /home/agent
+
+USER 1000:1000
+WORKDIR /app
+# tickets.json / .bughunter-session need a writable cwd: mount a tmpfs or a volume at /app/run and cd there
+ENTRYPOINT ["uv", "run", "--no-sync", "bughunter"]
+CMD ["--help"]

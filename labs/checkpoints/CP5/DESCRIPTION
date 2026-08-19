@@ -1,0 +1,2 @@
+Agent SDK 'bughunter' solution copied over labs/m5-agent-sdk/{LANG}/starter — run with --force (starter files always differ from the solution; yours are backed up); post.sh installs deps and, with ANTHROPIC_API_KEY set, runs `bughunter src/paymentservice --ticket` once (budget-capped) so reports/, tickets.json and .bughunter-session exist — otherwise it drops the sample findings file.
+Produced by: M5 (modules/05-claude-agent-sdk.md). Sources: manifest.txt. Use --lang python|typescript (or TRACK in labs/.env).

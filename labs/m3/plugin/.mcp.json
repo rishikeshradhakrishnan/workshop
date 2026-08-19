@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "astro-catalog": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["${WORKSHOP_REPO}/labs/mcp/astro-catalog/server.mjs"]
+    }
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "type": "result",
+  "subtype": "success",
+  "is_error": false,
+  "session_id": "00000000-0000-4000-8000-000000000000",
+  "num_turns": 6,
+  "duration_ms": 58210,
+  "result": "The bug-hunter agent reviewed src/adservice (Java, gRPC). Structured findings are attached.",
+  "structured_output": {
+    "service": "src/adservice",
+    "summary": "ILLUSTRATIVE SAMPLE captured for the workshop's expected-output folder — your run will differ. The ad service is a small Java gRPC server; findings concentrate on error handling around feature-flag lookups and unbounded random ad selection.",
+    "findings": [
+      {
+        "id": "F1",
+        "title": "Feature-flag client failure propagates as INTERNAL for every getAds call",
+        "severity": "MEDIUM",
+        "file": "src/adservice/src/main/java/oteldemo/AdService.java",
+        "line": 1,
+        "category": "error-handling",
+        "description": "Sample text: an exception from the flag provider is not caught around the evaluation call, so a flagd outage turns into failed ad requests instead of a default. Line number is a placeholder in this sample.",
+        "recommendation": "Wrap the flag evaluation in a try/catch that logs once and falls back to the default variant.",
+        "confidence": "medium"
+      },
+      {
+        "id": "F2",
+        "title": "Random ad selection can return duplicates and does not bound MAX_ADS_TO_SERVE against catalog size",
+        "severity": "LOW",
+        "file": "src/adservice/src/main/java/oteldemo/AdService.java",
+        "line": 1,
+        "category": "logic",
+        "description": "Sample text: the loop draws with replacement; with a small ad map the same ad may be served twice in one response. Line number is a placeholder in this sample.",
+        "recommendation": "Shuffle a copy of the list and take the first N distinct entries.",
+        "confidence": "low"
+      }
+    ]
+  },
+  "total_cost_usd": 0.0412,
+  "usage": { "input_tokens": 9120, "output_tokens": 1830, "cache_read_input_tokens": 41200, "cache_creation_input_tokens": 12050 },
+  "modelUsage": {},
+  "permission_denials": [],
+  "terminal_reason": "completed"
+}

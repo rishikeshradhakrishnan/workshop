@@ -1,0 +1,20 @@
+# Claude Security patch for F1 — SQL injection in review search (CWE-89)
+# Verification: patch-verifier ran the project tests (8 passed) and re-read the bare diff: targeted / no new vulnerability / behaviour unchanged for benign input.
+# Trust label: SAMPLE — shipped with the workshop template as .workshop/sample-results; regenerate with a real scan each quarter.
+# Apply with: git apply <this file>   (these # lines are ignored by git apply)
+diff --git a/app/reviews.py b/app/reviews.py
+index 2605236..56590d5 100644
+--- a/app/reviews.py
++++ b/app/reviews.py
+@@ -16,8 +16,9 @@ def list_reviews():
+ @bp.get("/reviews/search")
+ def search():
+     q = request.args.get("q", "")
+-    sql = f"SELECT id, product_id, rating, body FROM reviews WHERE private = 0 AND body LIKE '%{q}%'"   # string-built SQL
+-    rows = get_db().execute(sql).fetchall()
++    rows = get_db().execute(
++        "SELECT id, product_id, rating, body FROM reviews WHERE private = 0 AND body LIKE ?", (f"%{q}%",)
++    ).fetchall()
+     if request.accept_mimetypes.best == "text/html":
+         return render_template("search.html", q=q, rows=rows)
+     return jsonify([dict(r) for r in rows])

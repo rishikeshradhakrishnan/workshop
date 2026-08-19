@@ -1,0 +1,2 @@
+../codebase-toolkit (complete plugin: manifest v4.0.0, 2 agents, code-reviewer skill + checklists, hooks.json + protect-files.sh, .mcp.json) and ../workshop-marketplace (marketplace.json + plugin copy) next to $OTEL; post.sh validates the plugin, adds <WORKSHOP_ORG>/claude-marketplace and installs codebase-toolkit@<WORKSHOP_ORG>-marketplace at user scope, then runs labs/m3/dedupe.sh --yes.
+Produced by: M3 (modules/03-subagents-skills-and-plugins.md). Sources: manifest.txt (labs/m3/plugin, labs/m3/marketplace). Nothing new is written inside $OTEL.

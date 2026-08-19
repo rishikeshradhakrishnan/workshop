@@ -1,0 +1,15 @@
+{
+  "name": "workshop-marketplace",
+  "description": "Local marketplace built in Module 3 of the Claude builders workshop",
+  "owner": { "name": "<your name>" },
+  "plugins": [
+    {
+      "name": "codebase-toolkit",
+      "source": "./codebase-toolkit",
+      "description": "Service documentation, bug hunting, code review, generated-code protection hook, astro-catalog MCP server",
+      "version": "4.0.0",
+      "category": "developer-tools",
+      "keywords": ["documentation", "debugging", "code-review", "onboarding"]
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/WORKSHOP_ORG/claude-builders-workshop/labs/shared/findings.schema.json",
+  "title": "Workshop findings",
+  "description": "Structured bug/security findings. Used by labs/m4/bug-hunt.sh (claude -p --json-schema), mirrored by labs/m5-agent-sdk/*/schema.{py,ts} (SDK output_format), and deliberately the same shape as the Claude Security plugin's CLAUDE-SECURITY-RESULTS.jsonl minus cwe_id (Module 7).",
+  "type": "object",
+  "properties": {
+    "service": { "type": "string", "description": "Service or path that was analyzed, e.g. src/adservice" },
+    "summary": { "type": "string", "description": "Two or three sentences on overall state" },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "description": "F1, F2, ..." },
+          "title": { "type": "string" },
+          "severity": { "type": "string", "enum": ["HIGH", "MEDIUM", "LOW"] },
+          "file": { "type": "string", "description": "path relative to the repository root" },
+          "line": { "type": "integer", "minimum": 1 },
+          "category": { "type": "string", "description": "e.g. error-handling, concurrency, input-validation, resource-leak, security" },
+          "description": { "type": "string" },
+          "recommendation": { "type": "string" },
+          "confidence": { "type": "string", "enum": ["low", "medium", "high"] }
+        },
+        "required": ["id", "title", "severity", "file", "line", "category", "description", "recommendation", "confidence"],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": ["service", "summary", "findings"],
+  "additionalProperties": false
+}
