@@ -1,0 +1,12 @@
+[project]
+name = "workshop-m6-managed-agents"
+version = "4.0.0"
+description = "Python environment for the Module 6 lab (Claude Managed Agents): starter/, solution/, ../snippets, ../webhook_receiver.py"
+requires-python = ">=3.10"
+dependencies = [
+  "anthropic[webhooks]>=0.100",   # client.beta.agents / environments / sessions / … ; [webhooks] adds signature verification for unwrap()
+  "flask>=3.0",                   # webhook_receiver.py
+]
+
+[tool.uv]
+package = false

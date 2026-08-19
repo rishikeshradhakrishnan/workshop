@@ -1,0 +1,41 @@
+{
+  "currency": "USD",
+  "source": "Subset of the OpenTelemetry Astronomy Shop catalog (src/productcatalogservice/products.json), extended with workshop-only ownership metadata.",
+  "products": [
+    { "id": "OLJCESPC7Z", "name": "National Park Foundation Explorascope", "categories": ["telescopes"], "price_usd": 101.96,
+      "description": "Beginner 60mm refractor; a portion of proceeds supports the National Park Foundation." },
+    { "id": "66VCHSJNUP", "name": "Starsense Explorer Refractor Telescope", "categories": ["telescopes"], "price_usd": 349.95,
+      "description": "App-enabled 102mm refractor that uses your phone to locate objects in the night sky." },
+    { "id": "1YMWWN1N4O", "name": "Eclipsmart Travel Refractor Telescope", "categories": ["telescopes", "travel"], "price_usd": 129.95,
+      "description": "Dedicated white-light solar scope with permanent solar-safe filter; backpack included." },
+    { "id": "9SIQT8TOJO", "name": "Optical Tube Assembly", "categories": ["telescopes", "assembly"], "price_usd": 3599.00,
+      "description": "11-inch Schmidt-Cassegrain optical tube for advanced imaging rigs." },
+    { "id": "2ZYFJ3GM2N", "name": "Roof Binoculars", "categories": ["binoculars"], "price_usd": 209.95,
+      "description": "10x42 roof-prism binoculars with phase-coated BaK-4 prisms." },
+    { "id": "0PUK6V6EV0", "name": "Solar System Color Imager", "categories": ["accessories", "imaging"], "price_usd": 175.00,
+      "description": "One-shot colour planetary camera for lunar and solar-system imaging." },
+    { "id": "6E92ZMYYFZ", "name": "Solar Filter", "categories": ["accessories", "filters"], "price_usd": 69.95,
+      "description": "White-light solar filter for 8-inch Schmidt-Cassegrain telescopes." },
+    { "id": "L9ECAV7KIM", "name": "Lens Cleaning Kit", "categories": ["accessories"], "price_usd": 21.95,
+      "description": "Blower, brush, fluid and cloth for optics without scratches." },
+    { "id": "LS4PSXUNUM", "name": "Red Flashlight", "categories": ["accessories", "flashlights"], "price_usd": 57.80,
+      "description": "Three-mode red LED flashlight that preserves night vision." },
+    { "id": "HQTGWGPNH4", "name": "The Comet Book", "categories": ["books"], "price_usd": 0.99,
+      "description": "A 19th-century guide to comets, reprinted." }
+  ],
+  "owners": [
+    { "topic": "pricing",         "keywords": ["price", "pricing", "catalog", "product", "products", "sku"],   "service": "productcatalogservice", "path": "src/productcatalogservice", "language": "Go",         "team": "catalog" },
+    { "topic": "currency",        "keywords": ["currency", "conversion", "exchange", "rates"],                 "service": "currencyservice",       "path": "src/currencyservice",       "language": "C++",        "team": "payments" },
+    { "topic": "payment",         "keywords": ["payment", "charge", "credit card", "card"],                    "service": "paymentservice",        "path": "src/paymentservice",        "language": "JavaScript", "team": "payments" },
+    { "topic": "checkout",        "keywords": ["checkout", "order", "place order"],                            "service": "checkoutservice",       "path": "src/checkoutservice",       "language": "Go",         "team": "orders" },
+    { "topic": "cart",            "keywords": ["cart", "basket"],                                              "service": "cartservice",           "path": "src/cartservice",           "language": "C#",         "team": "orders" },
+    { "topic": "shipping",        "keywords": ["shipping", "quote", "tracking"],                               "service": "shippingservice",       "path": "src/shippingservice",       "language": "Rust",       "team": "logistics" },
+    { "topic": "recommendations", "keywords": ["recommend", "recommendation", "recommendations"],              "service": "recommendationservice", "path": "src/recommendationservice", "language": "Python",     "team": "growth" },
+    { "topic": "ads",             "keywords": ["ad", "ads", "advert", "banner"],                               "service": "adservice",             "path": "src/adservice",             "language": "Java",       "team": "growth" },
+    { "topic": "email",           "keywords": ["email", "confirmation", "mail"],                               "service": "emailservice",          "path": "src/emailservice",          "language": "Ruby",       "team": "orders" },
+    { "topic": "frontend",        "keywords": ["frontend", "ui", "web", "page"],                               "service": "frontend",              "path": "src/frontend",              "language": "TypeScript", "team": "storefront" },
+    { "topic": "feature-flags",   "keywords": ["flag", "flags", "feature flag", "flagd"],                      "service": "flagd",                 "path": "src/flagd",                 "language": "config",     "team": "platform" },
+    { "topic": "reviews",         "keywords": ["review", "reviews", "rating"],                                 "service": "astroshop-reviews",     "path": "(separate repo: astroshop-reviews)", "language": "Python", "team": "storefront" }
+  ],
+  "fx": { "USD": 1.0, "EUR": 0.92, "GBP": 0.79, "JPY": 151.0, "CHF": 0.88, "CAD": 1.36 }
+}

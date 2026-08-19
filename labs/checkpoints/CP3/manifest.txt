@@ -1,0 +1,7 @@
+# CP3 — M3 end state next to $OTEL. The complete reference plugin lives in labs/m3/plugin (single source of truth).
+# $OTEL/../codebase-toolkit            <- your plugin source (Module 5 loads it by path)
+# $OTEL/../workshop-marketplace        <- local marketplace serving a copy of the plugin
+# Loose .claude/agents|skills copies are intentionally NOT re-added to $OTEL — the plugin supplies them (post.sh runs dedupe).
+copy labs/m3/plugin        OTEL_PARENT:codebase-toolkit
+copy labs/m3/marketplace   OTEL_PARENT:workshop-marketplace
+copy labs/m3/plugin        OTEL_PARENT:workshop-marketplace/codebase-toolkit

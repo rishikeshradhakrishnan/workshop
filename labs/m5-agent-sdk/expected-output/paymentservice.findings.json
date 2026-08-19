@@ -1,0 +1,28 @@
+{
+  "service": "src/paymentservice",
+  "summary": "ILLUSTRATIVE SAMPLE for read-along — regenerate from a real run before delivery. The payment service is a small Node.js gRPC server that validates a credit card and returns a transaction id; findings centre on input validation and error handling in charge.js.",
+  "findings": [
+    {
+      "id": "F1",
+      "title": "Card expiry check compares against local time and accepts the current month after expiry day",
+      "severity": "MEDIUM",
+      "file": "src/paymentservice/charge.js",
+      "line": 1,
+      "category": "input-validation",
+      "description": "Placeholder line number. Sample text describing an off-by-one style expiry validation issue typical of this service.",
+      "recommendation": "Compare (year, month) tuples explicitly and add a table-driven test for the boundary months.",
+      "confidence": "medium"
+    },
+    {
+      "id": "F2",
+      "title": "Unhandled exception path returns a generic gRPC INTERNAL without logging the span error",
+      "severity": "LOW",
+      "file": "src/paymentservice/index.js",
+      "line": 1,
+      "category": "error-handling",
+      "description": "Placeholder line number. Sample text: the catch-all handler drops the original error message, making production triage harder.",
+      "recommendation": "Record the exception on the active span and map known validation errors to INVALID_ARGUMENT.",
+      "confidence": "low"
+    }
+  ]
+}

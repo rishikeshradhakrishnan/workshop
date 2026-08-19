@@ -1,0 +1,9 @@
+# CP4 — M4 end state. OTEL: the headless scripts + a captured findings file; REV: the two Action workflows.
+# Nothing in M5–M8 depends on M4 output; REV lines are skipped automatically when $REV is not set.
+copy labs/m4/bug-hunt.sh                             OTEL:reports/m4/bug-hunt.sh
+copy labs/m4/stream-filter.jq                        OTEL:reports/m4/stream-filter.jq
+copy labs/m4/streamjson-driver.py                    OTEL:reports/m4/streamjson-driver.py
+copy labs/m4/expected-output/adservice.findings.json OTEL:reports/adservice.findings.json
+copy labs/m4/expected-output/adservice.findings.json OTEL:reports/m4/adservice.findings.json
+copy labs/m4/github/claude.yml                       REV:.github/workflows/claude.yml
+copy labs/m4/github/code-review.yml                  REV:.github/workflows/code-review.yml

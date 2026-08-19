@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          { "type": "command", "if": "Edit(**/*.go)",
+            "command": "jq -r '.tool_input.file_path' | xargs gofmt -w", "statusMessage": "gofmt" },
+          { "type": "command", "if": "Edit(**/*.ts)",
+            "command": "jq -r '.tool_input.file_path' | xargs npx prettier --write", "timeout": 60 }
+        ]
+      }
+    ]
+  }
+}

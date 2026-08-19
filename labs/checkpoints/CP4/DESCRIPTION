@@ -1,0 +1,2 @@
+Headless toolkit scripts in $OTEL/reports/m4/ (bug-hunt.sh, stream-filter.jq, streamjson-driver.py) + a captured $OTEL/reports/adservice.findings.json; .github/workflows/{claude,code-review}.yml in $REV (skipped if REV unset). post.sh prints — never runs — the push/secret commands.
+Produced by: M4 (modules/04-automation-and-scale.md). Sources: manifest.txt (labs/m4/*). Nothing later depends on M4 output.

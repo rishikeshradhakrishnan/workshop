@@ -1,0 +1,17 @@
+{
+  "allowedHttpHookUrls": ["https://hooks.example.com/*", "http://localhost:8080/*"],
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Bash|Edit|Write|mcp__.*",
+        "hooks": [
+          { "type": "http",
+            "url": "http://localhost:8080/hooks/audit",
+            "headers": { "Authorization": "Bearer $AUDIT_TOKEN" },
+            "allowedEnvVars": ["AUDIT_TOKEN"],
+            "timeout": 10 }
+        ]
+      }
+    ]
+  }
+}

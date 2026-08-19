@@ -1,0 +1,16 @@
+[project]
+name = "bughunter"
+version = "4.0.0"
+description = "Workshop M5: Claude Agent SDK bug-hunting CLI"
+requires-python = ">=3.10"
+dependencies = ["claude-agent-sdk", "jsonschema>=4.20"]
+
+[project.scripts]
+bughunter = "bughunter.__main__:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["bughunter"]

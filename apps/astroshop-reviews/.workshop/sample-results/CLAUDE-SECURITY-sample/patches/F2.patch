@@ -1,0 +1,24 @@
+# Claude Security patch for F2 — Missing ownership check on private reviews (IDOR, CWE-639)
+# Verification: patch-verifier ran the project tests (8 passed); note: no existing test covers the cross-user case — the note (F2.md) asks you to add one.
+# Trust label: SAMPLE — shipped with the workshop template as .workshop/sample-results; regenerate with a real scan each quarter.
+# Apply with: git apply <this file>   (these # lines are ignored by git apply)
+diff --git a/app/users.py b/app/users.py
+index d2a9c6c..a873ea8 100644
+--- a/app/users.py
++++ b/app/users.py
+@@ -1,4 +1,4 @@
+-from flask import Blueprint, abort, jsonify, request
++from flask import Blueprint, abort, g, jsonify, request
+ from app.auth.decorators import require_login
+ from app.auth.tokens import issue_token
+ from app.db import get_db
+@@ -18,7 +18,8 @@ def login():
+ @bp.get("/users/<int:user_id>/reviews/private")
+ @require_login
+ def private_reviews(user_id: int):
+-    # Missing: user_id must equal g.user_id
++    if user_id != g.user_id:                          # only the owner may read their private reviews
++        abort(403)
+     rows = get_db().execute(
+         "SELECT id, product_id, rating, body FROM reviews WHERE private = 1 AND user_id = ?", (user_id,)
+     ).fetchall()

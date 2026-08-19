@@ -1,0 +1,2 @@
+Sanity check only: $OTEL is a git clone of the workshop fork and labs/.env exists. Copies nothing.
+Produced by: M0 (modules/00-welcome-and-platform-map.md). Content: none required (built into checkpoint.sh).

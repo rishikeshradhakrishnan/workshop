@@ -1,0 +1,9 @@
+{
+  "name": "codebase-toolkit",
+  "version": "4.0.0",
+  "description": "Onboard onto an unfamiliar codebase: parallel service documentation, severity-ranked bug hunting, an argument-driven code-review skill, a generated-code protection hook, and the astro-catalog MCP server.",
+  "author": { "name": "<your name>", "url": "https://github.com/<your-github-user>" },
+  "repository": "https://github.com/<WORKSHOP_ORG>/claude-marketplace",
+  "license": "Apache-2.0",
+  "keywords": ["documentation", "debugging", "code-review", "onboarding", "workshop"]
+}

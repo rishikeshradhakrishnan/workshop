@@ -1,0 +1,19 @@
+{
+  "name": "astro-catalog-mcp",
+  "version": "4.0.0",
+  "description": "Workshop lab MCP server (stdio): Astronomy Shop product catalog + service ownership lookup. Used from Module 2 onward.",
+  "type": "module",
+  "private": true,
+  "license": "Apache-2.0",
+  "main": "server.mjs",
+  "bin": { "astro-catalog-mcp": "server.mjs" },
+  "scripts": {
+    "start": "node server.mjs",
+    "selftest": "node server.mjs --selftest"
+  },
+  "engines": { "node": ">=20" },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.17.0",
+    "zod": "^3.25.0"
+  }
+}

@@ -1,0 +1,5 @@
+# pip fallback for people without uv:  python -m venv .venv && . .venv/bin/activate && pip install -r requirements.txt && pytest -q
+flask>=3.0
+pyyaml>=6.0
+requests>=2.31
+pytest>=8.0

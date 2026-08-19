@@ -1,0 +1,2 @@
+.claude/settings.json (allow/ask/deny + defaultMode + PreToolUse/PostToolUse hooks + mcp__astro-catalog__* allow + enabledMcpjsonServers), .claude/hooks/protect-files.sh|.ps1, .mcp.json (astro-catalog via ${WORKSHOP_REPO}) in $OTEL; post.sh runs npm ci for the MCP lab server, chmod +x, creates a dummy .env if missing.
+Produced by: M2 (modules/02-settings-hooks-and-mcp.md). Sources: files/OTEL/ + manifest.txt (labs/m2/hooks/*).

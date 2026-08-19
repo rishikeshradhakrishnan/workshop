@@ -1,0 +1,4 @@
+<!doctype html>
+<title>Review search</title>
+<h1>Results for {{ q|safe }}</h1>
+<ul>{% for r in rows %}<li>{{ r["product_id"] }} — {{ r["rating"] }}/5 — {{ r["body"] }}</li>{% endfor %}</ul>

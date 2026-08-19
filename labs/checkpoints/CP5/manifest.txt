@@ -1,0 +1,3 @@
+# CP5 — Agent SDK 'bughunter' solution over the starter for your track ({LANG} = python|typescript; --lang or TRACK in labs/.env).
+# Files you already edited in starter/ are reported as conflicts and kept; re-run with --force to take the reference version.
+copy labs/m5-agent-sdk/{LANG}/solution   WS:labs/m5-agent-sdk/{LANG}/starter
