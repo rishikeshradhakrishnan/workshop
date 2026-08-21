@@ -11,6 +11,7 @@ All notable changes to the workshop materials. Dates are the month the content w
 - New `FACILITATOR.md`: provisioning timeline, day-of run sheet, cut list, room-wide failure playbook, compressed/half-day agendas, decisions record.
 - Conventions: model **aliases** everywhere in Claude Code files; SDK code reads `MODEL` (alias) and Managed Agents code reads `CMA_MODEL` (full model ID) from `labs/.env`; workshop-org placeholder `<WORKSHOP_ORG>`; every version- or plan-specific statement carries a "verify before delivery" badge.
 - `Workshop-Technical-Reference-v3.md` (v3 draft) and `Workshop-Technical-Reference.md` (v2) are **retained unchanged** for history. Do not deliver from them.
+- 2026-08-21: added **cross-session messaging** (`--name`/`/rename`, `/list-agents`, `@session-name` mentions, `ListAgents`/`SendMessage`, `crossSessionInbound`) — M4 §4.5 talk track, §4.7 decision row, demo beat 3, troubleshooting and a stretch goal; reference §C.7 (`CLAUDE_CODE_MESSAGING_SOCKET`/`_TOKEN`), §D.5 (`crossSessionInbound`, `isolatePeerMachines`, `dialogExpiry`), §I.3 matrix row, §M.6 org switch-off, §O row 25. Verified against `code.claude.com/docs/en/cross-session-messaging`.
 
 ## v3 (2026-07) — modular reference draft, never released
 
