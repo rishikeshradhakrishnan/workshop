@@ -77,7 +77,7 @@ Record actual durations in §12; adjust effort defaults in lab text if any excee
 - [ ] Sample scan in `.workshop/sample-results/` regenerated with the **current** plugin version if older than 30 days at delivery.
 
 **Recordings / offline fallbacks (asciinema or short screen captures, no audio needed)**
-- [ ] M4 scale-out tour: `claude --bg` + agent view, a dynamic workflow in `/workflows`, `--cloud` + `--teleport`, `/schedule`.
+- [ ] M4 scale-out tour: `claude --bg` + agent view, a dynamic workflow in `/workflows`, `/list-agents` + an `@dockerfile-audit` cross-session message, `--cloud` + `--teleport`, `/schedule`.
 - [ ] M6 Console tour: agent builder → generated request → Sessions tracing view → Environments → Webhooks → Deployments.
 - [ ] M7: a complete `/claude-security` scan at 8× speed and the PR comment from the security-review Action.
 - [ ] M4-B: the `@claude` sticky comment updating on a PR.
